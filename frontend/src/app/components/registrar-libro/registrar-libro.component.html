@@ -1,0 +1,111 @@
+<div class="page">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">📚</div>
+        <div>
+          <h1>Registrar libro</h1>
+          <p class="subtitle">Completá los datos del nuevo libro</p>
+        </div>
+      </div>
+  
+      <!-- Alerta éxito -->
+      <div class="alert alert-success" *ngIf="exito">
+        ✅ Libro registrado exitosamente.
+      </div>
+  
+      <!-- Alerta error -->
+      <div class="alert alert-error" *ngIf="errorMsg">
+        ⚠️ {{ errorMsg }}
+      </div>
+  
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  
+        <!-- Sección: Identificación -->
+        <fieldset>
+          <legend>Identificación</legend>
+          <div class="grid-2">
+            <div class="field">
+              <label for="titulo">Título <span class="req">*</span></label>
+              <input id="titulo" type="text" formControlName="titulo" placeholder="Ej: Cien años de soledad" />
+              <span class="error" *ngIf="f['titulo'].touched && f['titulo'].errors?.['required']">El título es obligatorio.</span>
+            </div>
+            <div class="field">
+              <label for="autor">Autor <span class="req">*</span></label>
+              <input id="autor" type="text" formControlName="autor" placeholder="Ej: Gabriel García Márquez" />
+              <span class="error" *ngIf="f['autor'].touched && f['autor'].errors?.['required']">El autor es obligatorio.</span>
+            </div>
+          </div>
+  
+          <div class="grid-2">
+            <div class="field">
+              <label for="isbn">ISBN <span class="req">*</span></label>
+              <input id="isbn" type="text" formControlName="isbn" placeholder="Ej: 978-950-07-0001-1" />
+              <span class="error" *ngIf="f['isbn'].touched && f['isbn'].errors?.['required']">El ISBN es obligatorio.</span>
+              <span class="error" *ngIf="f['isbn'].touched && f['isbn'].errors?.['pattern']">Formato inválido (solo números y guiones, 10–17 caracteres).</span>
+            </div>
+            <div class="field">
+              <label for="editorial">Editorial</label>
+              <input id="editorial" type="text" formControlName="editorial" placeholder="Ej: Sudamericana" />
+            </div>
+          </div>
+        </fieldset>
+  
+        <!-- Sección: Clasificación -->
+        <fieldset>
+          <legend>Clasificación</legend>
+          <div class="grid-2">
+            <div class="field">
+              <label for="categoria">Categoría</label>
+              <select id="categoria" formControlName="categoria">
+                <option value="">— Seleccioná —</option>
+                <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fecha_ingreso">Fecha de ingreso</label>
+              <input id="fecha_ingreso" type="date" formControlName="fecha_ingreso" />
+            </div>
+          </div>
+        </fieldset>
+  
+        <!-- Sección: Precios y stock -->
+        <fieldset>
+          <legend>Precios y stock</legend>
+          <div class="grid-3">
+            <div class="field">
+              <label for="precio_costo">Precio de costo</label>
+              <div class="input-prefix">
+                <span>$</span>
+                <input id="precio_costo" type="number" formControlName="precio_costo" min="0" step="0.01" placeholder="0.00" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="precio_venta">Precio de venta</label>
+              <div class="input-prefix">
+                <span>$</span>
+                <input id="precio_venta" type="number" formControlName="precio_venta" min="0" step="0.01" placeholder="0.00" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="stock">Stock <span class="req">*</span></label>
+              <input id="stock" type="number" formControlName="stock" min="0" placeholder="0" />
+              <span class="badge-low" *ngIf="f['stock'].value !== null && f['stock'].value < 5 && f['stock'].value >= 0">
+                ⚠ Stock bajo
+              </span>
+              <span class="error" *ngIf="f['stock'].touched && f['stock'].errors?.['min']">El stock no puede ser negativo.</span>
+            </div>
+          </div>
+        </fieldset>
+  
+        <div class="actions">
+          <button type="button" class="btn-secondary" (click)="form.reset({ stock: 0, fecha_ingreso: hoy })">
+            Limpiar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="cargando">
+            {{ cargando ? 'Guardando...' : 'Registrar libro' }}
+          </button>
+        </div>
+  
+      </form>
+    </div>
+  </div>

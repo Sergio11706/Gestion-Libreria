@@ -1,18 +1,10 @@
-const { Sequelize, DataTypes } = require('sequelize');
-require('dotenv').config();
+const { sequelize } = require('./database');
+const Usuario = require('../models/Usuario');
+const Encargado = require('../models/Encargado');
+const Empleado = require('../models/Empleado');
+const Libro = require('../models/Libro');
 
-const sequelize = new Sequelize(process.env.DB_NAME || 'gestion_libreria', process.env.DB_USER || 'root', process.env.DB_PASSWORD || '', {
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 3306,
-  dialect: 'mysql',
-  logging: false
-});
-
-const Usuario = require('../models/Usuario')(sequelize, DataTypes);
-const Encargado = require('../models/Encargado')(sequelize, DataTypes);
-const Empleado = require('../models/Empleado')(sequelize, DataTypes);
-const Libro = require('../models/Libro')(sequelize, DataTypes);
-
+// Asociaciones
 Usuario.hasOne(Encargado, {
   foreignKey: 'id_usuario',
   sourceKey: 'id_usuario',
@@ -37,7 +29,6 @@ Empleado.belongsTo(Usuario, {
 
 module.exports = {
   sequelize,
-  Sequelize,
   Usuario,
   Encargado,
   Empleado,

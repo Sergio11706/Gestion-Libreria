@@ -1,0 +1,176 @@
+:host {
+	--color-primary:      #1E3A5F;
+	--color-secondary:    #2D6A8E;
+	--color-accent:       #D4A017;
+	--color-accent-dark:  #b8880f;
+	--color-bg:           #F5F7FA;
+	--color-bg-card:      #ffffff;
+	--color-text:         #2C2C2C;
+	--color-text-muted:   #6B7280;
+	--color-border:       #DDE3EC;
+	--shadow-card:        0 4px 24px rgba(30, 58, 95, 0.10),
+												0 1px 4px  rgba(30, 58, 95, 0.06);
+	--radius-card:        14px;
+	--radius-btn:         8px;
+	--transition:         0.22s ease;
+}
+
+* { box-sizing: border-box; }
+
+.login-wrapper {
+	min-height: 100vh;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--color-bg);
+	padding: 2rem 1rem;
+	font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.login-card {
+	width: 100%;
+	max-width: 920px;
+	background: var(--color-bg-card);
+	border-radius: var(--radius-card);
+	box-shadow: var(--shadow-card);
+	border: 1px solid var(--color-border);
+	padding: 1.5rem;
+	animation: fadeInUp 0.45s ease both;
+}
+
+.card-header {
+	display:flex;
+	gap:0.75rem;
+	align-items:center;
+	margin-bottom: 0.75rem;
+}
+
+.card-header .icon {
+	width:56px;
+	height:56px;
+	border-radius:10px;
+	background:var(--color-primary);
+	color:var(--color-accent);
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-size:1.5rem;
+}
+
+.card-header h1 { margin:0; font-size:1.25rem; color:var(--color-primary); }
+.subtitle { margin:0; color:var(--color-text-muted); font-size:0.9rem }
+
+.btn-primary {
+	display:inline-flex;
+	align-items:center;
+	gap:0.5rem;
+	padding:0.5rem 0.9rem;
+	font-weight:600;
+	color:#fff;
+	background:var(--color-accent);
+	border:none;
+	border-radius:8px;
+	cursor:pointer;
+	box-shadow: 0 2px 8px rgba(212,160,23,0.25);
+	transition: background var(--transition), transform var(--transition);
+}
+.btn-primary:hover { background:var(--color-accent-dark); transform:translateY(-1px); }
+
+ul { margin:0; padding:0; }
+li { list-style:none; }
+
+/* Lista de items */
+ul > li { padding:0.85rem 0; border-bottom:1px solid var(--color-border); display:flex; justify-content:space-between; align-items:center; }
+ul > li .meta { color:var(--color-text-muted); font-size:0.95rem }
+
+@keyframes fadeInUp { from { opacity:0; transform:translateY(12px);} to { opacity:1; transform:none; } }
+
+@media (max-width: 640px) {
+	.login-card { padding:1rem; border-radius:10px }
+	.card-header .icon { width:48px; height:48px }
+}
+
+.toolbar {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listado-libros {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.item-libro {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.item-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.titulo {
+  font-weight: 600;
+}
+
+.detalle {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.stock {
+  font-weight: 700;
+}
+
+.tabla-libros {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.tabla-libros thead tr {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.tabla-libros th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.tabla-libros th:last-child,
+.tabla-libros td:last-child {
+  text-align: center;
+}
+
+.tabla-libros td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.fila-libro {
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.fila-libro:hover td {
+  background: var(--color-bg);
+}
+
+.stock {
+  font-weight: 700;
+  color: var(--color-primary);
+}

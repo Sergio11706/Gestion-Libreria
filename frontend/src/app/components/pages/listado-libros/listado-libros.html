@@ -1,0 +1,51 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="card-header">
+      <div class="icon">📚</div>
+      <div>
+        <h1>Listado de libros</h1>
+        <p class="subtitle">Todos los libros registrados</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn-primary" type="button" (click)="toggleFormulario()">
+        {{ mostrarFormulario ? 'Cerrar' : 'Registrar libro' }}
+      </button>
+    </div>
+
+    <div *ngIf="mostrarFormulario">
+      <app-registrar-libro (saved)="onLibroGuardado()"></app-registrar-libro>
+    </div>
+
+    <ng-container *ngIf="!cargando; else cargandoTemplate">
+      <table class="tabla-libros" *ngIf="libros.length > 0; else sinLibros">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let libro of libros" class="fila-libro"
+              [routerLink]="['/libros/actualizar', libro.id_libro]">
+            <td>{{ libro.titulo }}</td>
+            <td>{{ libro.autor }}</td>
+            <td>{{ libro.categoria || 'Sin categoría' }}</td>
+            <td class="stock">{{ libro.stock }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+
+    <ng-template #cargandoTemplate>
+      <div>Cargando libros...</div>
+    </ng-template>
+
+    <ng-template #sinLibros>
+      <div>No hay libros registrados.</div>
+    </ng-template>
+  </div>
+</div>

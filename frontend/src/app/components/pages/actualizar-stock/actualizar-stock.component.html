@@ -1,0 +1,81 @@
+<div class="page">
+    <div class="container">
+  
+      <div class="header">
+        <div class="header-icon">📦</div>
+        <div>
+          <h1>Actualizar stock</h1>
+        </div>
+      </div>
+  
+      <!-- Alerta éxito -->
+      <div class="alert alert-success" *ngIf="exito">
+        ✅ Stock actualizado exitosamente.
+      </div>
+  
+      <div class="card" *ngIf="libro">
+        <p class="section-label">Libro</p>
+        <div class="grid-2 info-grid">
+          <div>
+            <p class="info-label">ID</p>
+            <p class="info-value">{{ libro.id_libro }}</p>
+          </div>
+          <div>
+            <p class="info-label">Título</p>
+            <p class="info-value">{{ libro.titulo }}</p>
+          </div>
+          <div>
+            <p class="info-label">Autor</p>
+            <p class="info-value">{{ libro.autor }}</p>
+          </div>
+          <div>
+            <p class="info-label">ISBN</p>
+            <p class="info-value">{{ libro.isbn }}</p>
+          </div>
+          <div>
+            <p class="info-label">Editorial</p>
+            <p class="info-value">{{ libro.editorial }}</p>
+          </div>
+          <div>
+            <p class="info-label">Categoría</p>
+            <p class="info-value">{{ libro.categoria || '-' }}</p>
+          </div>
+          <div>
+            <p class="info-label">Precio venta</p>
+            <p class="info-value">{{ libro.precio_venta | number:'1.2-2' }}</p>
+          </div>
+          <div>
+            <p class="info-label">Fecha ingreso</p>
+            <p class="info-value">{{ libro.fecha_ingreso }}</p>
+          </div>
+          <div>
+            <p class="info-label">Stock actual</p>
+            <p class="info-value">{{ libro.stock }}</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1rem;">
+          <p class="section-label">Descontar stock</p>
+          <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:flex-end;">
+            <div style="flex:1; min-width:220px;">
+              <label class="form-label">Cantidad a descontar</label>
+              <input type="number" [(ngModel)]="cantidadADescontar" name="cantidadADescontar" min="0" placeholder="0" />
+            </div>
+            <button class="btn-primary" (click)="calcularStockResultante()">Calcular stock resultante</button>
+          </div>
+
+          <div *ngIf="stockResultante !== null" class="alert alert-success" style="margin-top:1rem;">
+            El stock resultante será <strong>{{ stockResultante }}</strong> si confirmás.
+          </div>
+
+          <div *ngIf="mostrandoConfirmacion" style="margin-top:1rem; display:flex; gap:0.75rem; justify-content:flex-end; flex-wrap:wrap;">
+            <button class="btn-secondary" (click)="cancelar()">Cancelar</button>
+            <button class="btn-primary" (click)="actualizarStock()" [disabled]="actualizando">
+              {{ actualizando ? 'Actualizando...' : 'Confirmar actualización' }}
+            </button>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>

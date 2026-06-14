@@ -192,7 +192,6 @@
   align-items: center;
   gap: 0.6rem;
   cursor: pointer;
-  user-select: none;
 }
 
 .checkbox-input {

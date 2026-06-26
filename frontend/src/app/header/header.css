@@ -1,0 +1,85 @@
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a2e40;
+  color: #ffffff;
+  padding: 0 25px;
+  height: 75px; /* Un poquito más alto para que quepa el nombre */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.brand-text h1 {
+  font-size: 14px;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.user-welcome {
+  font-size: 12px;
+  color: #dca327; /* Dorado */
+  margin: 2px 0 0 0;
+}
+
+.user-welcome span {
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Menú de Navegación Central */
+.header-nav .nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.nav-menu a:hover, .nav-menu a.active {
+  background-color: rgba(220, 163, 39, 0.2);
+  color: #dca327;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 5px 15px;
+  border-radius: 20px;
+  width: 250px;
+}
+
+.search-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  width: 100%;
+}
+
+.btn-logout {
+  background-color: #dca327;
+  color: #1a2e40;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-logout:hover {
+  background-color: #f1b42f;
+  transform: scale(1.05);
+}

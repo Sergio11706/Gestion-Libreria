@@ -1,19 +1,23 @@
-export interface Usuario {
+export type RolSesion = 'encargado' | 'empleado';
+
+export interface Encargado {
+  id_usuario: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  telefono: string;
+}
+
+export interface UsuarioSesion {
+  rol: RolSesion;
   id_usuario: number;
   nombre_usuario: string;
-  contraseña: string;
-}
-
-export interface Encargado extends Usuario {
-  nombre: string;
-  apellido: string;
-  email: string;
-  telefono: string;
-}
-
-export interface Empleado extends Usuario {
-  nombre: string;
-  apellido: string;
-  email: string;
-  telefono: string;
+  encargado?: Encargado;
+  empleado?: {
+    id_usuario: number;
+    nombre: string;
+    apellido: string;
+    email: string;
+    telefono: string;
+  };
 }

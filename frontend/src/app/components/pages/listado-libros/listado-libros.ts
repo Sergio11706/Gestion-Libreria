@@ -16,6 +16,7 @@ export class ListadoLibros implements OnInit {
   libros: Libro[] = [];
   cargando = true;
   mostrarFormulario = false;
+  libroEnEdicion: Libro | null = null;
 
   constructor(private libroService: LibroService, private cdr: ChangeDetectorRef) {}
 
@@ -33,17 +34,34 @@ export class ListadoLibros implements OnInit {
       error: () => {
         this.libros = [];
         this.cargando = false;
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       }
     });
   }
 
   toggleFormulario() {
-    this.mostrarFormulario = !this.mostrarFormulario;
+    if (this.mostrarFormulario) {
+      this.cerrarFormulario();
+    } else {
+      this.libroEnEdicion = null;
+      this.mostrarFormulario = true;
+    }
+  }
+
+  editarLibro(libro: Libro, event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.libroEnEdicion = { ...libro };
+    this.mostrarFormulario = true;
+  }
+
+  cerrarFormulario(): void {
+    this.mostrarFormulario = false;
+    this.libroEnEdicion = null;
   }
 
   onLibroGuardado() {
-    this.mostrarFormulario = false;
+    this.cerrarFormulario();
     this.cargarLibros();
   }
 }

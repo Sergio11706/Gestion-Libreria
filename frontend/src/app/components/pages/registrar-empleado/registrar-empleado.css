@@ -1,4 +1,4 @@
-/* ── Variables (misma paleta que login / registrar-libro) ── */
+/* ── Variables (misma paleta que login) ───────────── */
 :host {
   --color-primary:      #1E3A5F;
   --color-secondary:    #2D6A8E;
@@ -30,39 +30,39 @@
   box-sizing: border-box;
 }
 
-/* ── Página ───────────────────────────────────────── */
-.page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2.5rem 1.25rem 3rem;
-  background-color: var(--color-bg);
-  background-image:
-    radial-gradient(ellipse 70% 55% at 15% 5%,  rgba(45, 106, 142, 0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 85% 95%,  rgba(30, 58,  95, 0.09) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 30% at 50% 50%,  rgba(212, 160, 23, 0.04) 0%, transparent 60%);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-}
-
-/* ── Contenedor principal ─────────────────────────── */
-.container {
+/* ── Tarjeta principal ────────────────────────────── */
+.card {
   width: 100%;
   max-width: 780px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
   animation: fadeInUp 0.45s ease both;
 }
 
 /* ── Encabezado ───────────────────────────────────── */
-.header {
+.card-header {
   display: flex;
   align-items: center;
   gap: 1.15rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
   padding-bottom: 1.35rem;
+  border-bottom: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-bg-card), var(--color-bg-card)) padding-box,
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-border) 20%,
+      var(--color-border) 80%,
+      transparent 100%
+    ) border-box;
   border-bottom: 1px solid var(--color-border);
 }
 
-.header-icon {
+.icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,7 +98,7 @@ h1 {
   gap: 0.5rem;
   border-radius: var(--radius-input);
   padding: 0.85rem 1.1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
   font-size: 0.875rem;
   font-weight: 500;
   animation: slideDown 0.3s ease both;
@@ -110,37 +110,35 @@ h1 {
   border: 1px solid #bbf7d0;
 }
 
-/* ── Tarjetas de sección ──────────────────────────── */
-.card {
-  background: var(--color-bg-card);
+.alert-error {
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid #fecdd3;
+}
+
+/* ── Secciones del formulario ─────────────────────── */
+fieldset {
   border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  padding: 1.5rem 1.75rem;
-  margin-bottom: 1.25rem;
+  border-radius: 10px;
+  padding: 1.35rem 1.5rem 1.25rem;
+  margin-bottom: 1.35rem;
+  background: linear-gradient(180deg, #fafbfd 0%, #ffffff 100%);
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-.card:focus-within {
+fieldset:focus-within {
   border-color: rgba(45, 106, 142, 0.35);
-  box-shadow:
-    var(--shadow-card),
-    0 0 0 3px rgba(45, 106, 142, 0.06);
+  box-shadow: 0 0 0 3px rgba(45, 106, 142, 0.06);
 }
 
-.card:last-child {
-  margin-bottom: 0;
-}
-
-.section-label {
+legend {
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.09em;
   color: var(--color-secondary);
-  margin: 0 0 1.1rem;
-  padding-bottom: 0.65rem;
-  border-bottom: 1px solid var(--color-border);
+  padding: 0 0.55rem;
+  background: var(--color-bg-card);
 }
 
 /* ── Grillas ──────────────────────────────────────── */
@@ -153,6 +151,12 @@ h1 {
 
 .grid-2:last-child {
   margin-bottom: 0;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
 }
 
 /* ── Campos ───────────────────────────────────────── */
@@ -173,6 +177,14 @@ label {
 .req {
   color: #dc2626;
   font-weight: 700;
+}
+
+.hint {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 input,
@@ -220,6 +232,10 @@ select {
   padding-right: 2.2rem;
 }
 
+input[type="date"] {
+  color-scheme: light;
+}
+
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
@@ -231,79 +247,90 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-/* ── Mensajes ─────────────────────────────────────── */
+/* ── Input con prefijo $ ──────────────────────────── */
+.input-prefix {
+  display: flex;
+  align-items: stretch;
+  height: 44px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: var(--color-input-bg);
+  overflow: hidden;
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.input-prefix:hover {
+  border-color: #b4c3d6;
+  background: #ffffff;
+}
+
+.input-prefix:focus-within {
+  border-color: var(--color-input-focus);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(45, 106, 142, 0.12);
+}
+
+.input-prefix span {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  background: rgba(45, 106, 142, 0.07);
+  border-right: 1.5px solid var(--color-border);
+}
+
+.input-prefix input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.input-prefix input:focus {
+  box-shadow: none;
+}
+
+/* ── Mensajes de validación ───────────────────────── */
 .error {
-  display: block;
   font-size: 0.76rem;
   color: #dc2626;
   font-weight: 500;
   line-height: 1.35;
-  margin: 0.5rem 0 0.85rem;
-}
-
-/* ── Info del libro encontrado ────────────────────── */
-.info-grid {
-  margin-bottom: 1.1rem;
-}
-
-.info-grid > div {
-  padding: 0.75rem 0.9rem;
-  background: linear-gradient(180deg, #fafbfd 0%, #ffffff 100%);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-input);
-  transition: border-color var(--transition);
-}
-
-.info-grid > div:hover {
-  border-color: #b4c3d6;
-}
-
-.info-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
-  margin: 0 0 0.3rem;
-}
-
-.info-value {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin: 0;
-  line-height: 1.35;
-  word-break: break-word;
-}
-
-/* ── Badge de stock ───────────────────────────────── */
-.badge-stock {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  border-radius: var(--radius-input);
-  padding: 0.55rem 0.9rem;
-  width: fit-content;
-  max-width: 100%;
-  line-height: 1.4;
 }
 
 .badge-low {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.74rem;
+  font-weight: 600;
   color: var(--color-warning);
   background: var(--color-warning-bg);
   border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  width: fit-content;
   animation: pulse 2s ease-in-out infinite;
 }
 
-.badge-ok {
-  color: var(--color-success);
-  background: var(--color-success-bg);
-  border: 1px solid #bbf7d0;
+/* ── Acciones ─────────────────────────────────────── */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
 }
 
-/* ── Botones ──────────────────────────────────────── */
 .btn-primary,
 .btn-secondary {
   display: inline-flex;
@@ -351,11 +378,6 @@ input[type="number"]::-webkit-inner-spin-button {
   transform: none;
 }
 
-.btn-full {
-  width: 100%;
-  margin-top: 0.25rem;
-}
-
 .btn-secondary {
   color: var(--color-text-muted);
   background: var(--color-input-bg);
@@ -370,17 +392,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .btn-secondary:active {
   transform: scale(0.98);
-}
-
-/* ── Acciones ─────────────────────────────────────── */
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.35rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-border);
 }
 
 /* ── Animaciones ──────────────────────────────────── */
@@ -413,15 +424,21 @@ input[type="number"]::-webkit-inner-spin-button {
 
 /* ── Responsive ───────────────────────────────────── */
 @media (max-width: 680px) {
-  .grid-2 {
+  .grid-2,
+  .grid-3 {
     grid-template-columns: 1fr;
   }
 
-  .header {
+  .card {
+    padding: 1.75rem 1.25rem 1.5rem;
+    border-radius: 10px;
+  }
+
+  .card-header {
     gap: 0.9rem;
   }
 
-  .header-icon {
+  .icon {
     width: 48px;
     height: 48px;
     font-size: 1.4rem;
@@ -429,11 +446,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
   h1 {
     font-size: 1.25rem;
-  }
-
-  .card {
-    padding: 1.25rem 1.1rem;
-    border-radius: 10px;
   }
 
   .actions {
@@ -445,50 +457,14 @@ input[type="number"]::-webkit-inner-spin-button {
     width: 100%;
     min-width: unset;
   }
+
+  fieldset {
+    padding: 1.1rem 1rem 1rem;
+  }
 }
 
 @media (max-width: 380px) {
   .page {
     padding: 1.25rem 0.75rem 2rem;
   }
-}
-
-.stock-form {
-  margin-top: 1rem;
-}
-
-.stock-row {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-
-.stock-field {
-  flex: 1;
-  min-width: 220px;
-}
-
-.confirm-actions {
-  margin-top: 1rem;
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-}
-
-.stock-result {
-  margin-top: 1rem;
-}
-
-.field-error {
-  display: block;
-  margin-top: 0.35rem;
-  font-size: 0.76rem;
-  color: #dc2626;
-  font-weight: 500;
-}
-
-.req {
-  color: #dc2626;
 }

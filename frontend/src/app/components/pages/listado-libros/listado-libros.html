@@ -15,7 +15,11 @@
     </div>
 
     <div *ngIf="mostrarFormulario">
-      <app-registrar-libro (saved)="onLibroGuardado()"></app-registrar-libro>
+      <app-registrar-libro
+        [libroEditar]="libroEnEdicion"
+        (saved)="onLibroGuardado()"
+        (cancelado)="cerrarFormulario()"
+      ></app-registrar-libro>
     </div>
 
     <ng-container *ngIf="!cargando; else cargandoTemplate">
@@ -26,15 +30,23 @@
             <th>Autor</th>
             <th>Categoría</th>
             <th>Stock</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let libro of libros" class="fila-libro"
-              [routerLink]="['/libros/actualizar', libro.id_libro]">
+          <tr *ngFor="let libro of libros" class="fila-libro">
             <td>{{ libro.titulo }}</td>
             <td>{{ libro.autor }}</td>
             <td>{{ libro.categoria || 'Sin categoría' }}</td>
             <td class="stock">{{ libro.stock }}</td>
+            <td class="acciones">
+              <button type="button" class="btn-edit" (click)="editarLibro(libro, $event)">
+                Editar
+              </button>
+              <a class="btn-stock" [routerLink]="['/libros/actualizar', libro.id_libro]">
+                Stock
+              </a>
+            </td>
           </tr>
         </tbody>
       </table>

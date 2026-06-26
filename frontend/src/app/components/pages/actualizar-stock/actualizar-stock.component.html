@@ -1,81 +1,103 @@
 <div class="page">
-    <div class="container">
-  
-      <div class="header">
-        <div class="header-icon">📦</div>
+  <div class="container">
+    <div class="header">
+      <div class="header-icon">📦</div>
+      <div>
+        <h1>Actualizar stock</h1>
+      </div>
+    </div>
+
+    <div class="alert alert-error" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="alert alert-success" *ngIf="exito">
+      Stock actualizado exitosamente.
+    </div>
+
+    <div class="card" *ngIf="libro">
+      <p class="section-label">Libro</p>
+      <div class="grid-2 info-grid">
         <div>
-          <h1>Actualizar stock</h1>
+          <p class="info-label">ID</p>
+          <p class="info-value">{{ libro.id_libro }}</p>
+        </div>
+        <div>
+          <p class="info-label">Título</p>
+          <p class="info-value">{{ libro.titulo }}</p>
+        </div>
+        <div>
+          <p class="info-label">Autor</p>
+          <p class="info-value">{{ libro.autor }}</p>
+        </div>
+        <div>
+          <p class="info-label">ISBN</p>
+          <p class="info-value">{{ libro.isbn }}</p>
+        </div>
+        <div>
+          <p class="info-label">Editorial</p>
+          <p class="info-value">{{ libro.editorial }}</p>
+        </div>
+        <div>
+          <p class="info-label">Categoría</p>
+          <p class="info-value">{{ libro.categoria || '-' }}</p>
+        </div>
+        <div>
+          <p class="info-label">Precio venta</p>
+          <p class="info-value">{{ libro.precio_venta | number:'1.2-2' }}</p>
+        </div>
+        <div>
+          <p class="info-label">Fecha ingreso</p>
+          <p class="info-value">{{ libro.fecha_ingreso }}</p>
+        </div>
+        <div>
+          <p class="info-label">Stock actual</p>
+          <p class="info-value">{{ libro.stock }}</p>
         </div>
       </div>
-  
-      <!-- Alerta éxito -->
-      <div class="alert alert-success" *ngIf="exito">
-        ✅ Stock actualizado exitosamente.
-      </div>
-  
-      <div class="card" *ngIf="libro">
-        <p class="section-label">Libro</p>
-        <div class="grid-2 info-grid">
-          <div>
-            <p class="info-label">ID</p>
-            <p class="info-value">{{ libro.id_libro }}</p>
-          </div>
-          <div>
-            <p class="info-label">Título</p>
-            <p class="info-value">{{ libro.titulo }}</p>
-          </div>
-          <div>
-            <p class="info-label">Autor</p>
-            <p class="info-value">{{ libro.autor }}</p>
-          </div>
-          <div>
-            <p class="info-label">ISBN</p>
-            <p class="info-value">{{ libro.isbn }}</p>
-          </div>
-          <div>
-            <p class="info-label">Editorial</p>
-            <p class="info-value">{{ libro.editorial }}</p>
-          </div>
-          <div>
-            <p class="info-label">Categoría</p>
-            <p class="info-value">{{ libro.categoria || '-' }}</p>
-          </div>
-          <div>
-            <p class="info-label">Precio venta</p>
-            <p class="info-value">{{ libro.precio_venta | number:'1.2-2' }}</p>
-          </div>
-          <div>
-            <p class="info-label">Fecha ingreso</p>
-            <p class="info-value">{{ libro.fecha_ingreso }}</p>
-          </div>
-          <div>
-            <p class="info-label">Stock actual</p>
-            <p class="info-value">{{ libro.stock }}</p>
-          </div>
-        </div>
 
-        <div class="card" style="margin-top:1rem;">
-          <p class="section-label">Descontar stock</p>
-          <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:flex-end;">
-            <div style="flex:1; min-width:220px;">
-              <label class="form-label">Cantidad a descontar</label>
-              <input type="number" [(ngModel)]="cantidadADescontar" name="cantidadADescontar" min="0" placeholder="0" />
+      <div class="card stock-form">
+        <p class="section-label">Descontar stock</p>
+        <form #stockForm="ngForm" (ngSubmit)="calcularStockResultante(stockForm)" novalidate>
+          <div class="stock-row">
+            <div class="stock-field">
+              <label class="form-label" for="cantidadADescontar">Cantidad a descontar <span class="req">*</span></label>
+              <input
+                id="cantidadADescontar"
+                type="number"
+                [(ngModel)]="cantidadADescontar"
+                name="cantidadADescontar"
+                min="0"
+                [max]="libro.stock"
+                required
+                placeholder="0"
+                #cantidadField="ngModel"
+              />
+              <span class="field-error" *ngIf="(cantidadField.touched || stockForm.submitted) && cantidadField.errors?.['required']">
+                Ingresá una cantidad.
+              </span>
+              <span class="field-error" *ngIf="(cantidadField.touched || stockForm.submitted) && cantidadField.errors?.['min']">
+                La cantidad no puede ser negativa.
+              </span>
+              <span class="field-error" *ngIf="(cantidadField.touched || stockForm.submitted) && cantidadField.errors?.['max']">
+                No podés descontar más de {{ libro.stock }} unidades.
+              </span>
             </div>
-            <button class="btn-primary" (click)="calcularStockResultante()">Calcular stock resultante</button>
+            <button class="btn-primary" type="submit">Calcular stock resultante</button>
           </div>
+        </form>
 
-          <div *ngIf="stockResultante !== null" class="alert alert-success" style="margin-top:1rem;">
-            El stock resultante será <strong>{{ stockResultante }}</strong> si confirmás.
-          </div>
+        <div *ngIf="stockResultante !== null" class="alert alert-success stock-result">
+          El stock resultante será <strong>{{ stockResultante }}</strong> si confirmás.
+        </div>
 
-          <div *ngIf="mostrandoConfirmacion" style="margin-top:1rem; display:flex; gap:0.75rem; justify-content:flex-end; flex-wrap:wrap;">
-            <button class="btn-secondary" (click)="cancelar()">Cancelar</button>
-            <button class="btn-primary" (click)="actualizarStock()" [disabled]="actualizando">
-              {{ actualizando ? 'Actualizando...' : 'Confirmar actualización' }}
-            </button>
-          </div>
+        <div *ngIf="mostrandoConfirmacion" class="confirm-actions">
+          <button class="btn-secondary" type="button" (click)="cancelar()">Cancelar</button>
+          <button class="btn-primary" type="button" (click)="actualizarStock()" [disabled]="actualizando">
+            {{ actualizando ? 'Actualizando...' : 'Confirmar actualización' }}
+          </button>
         </div>
       </div>
-  
     </div>
   </div>
+</div>

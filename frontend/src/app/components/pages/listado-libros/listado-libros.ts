@@ -18,6 +18,9 @@ export class ListadoLibros implements OnInit {
   mostrarFormulario = false;
   libroEnEdicion: Libro | null = null;
 
+  criterioActual: keyof Libro = 'titulo'; 
+  ordenAscendente: boolean = true;
+
   constructor(private libroService: LibroService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
@@ -27,7 +30,8 @@ export class ListadoLibros implements OnInit {
   cargarLibros(): void {
     this.libroService.obtenerLibros().subscribe({
       next: (data) => {
-        this.libros = data.sort((a, b) => a.titulo.localeCompare(b.titulo));
+        this.libros = data;
+        this.aplicarOrdenamiento(); 
         this.cargando = false;
         this.cdr.detectChanges();
       },
@@ -35,6 +39,30 @@ export class ListadoLibros implements OnInit {
         this.libros = [];
         this.cargando = false;
         this.cdr.detectChanges();
+      }
+    });
+  }
+
+  ordenarLibros(criterio: keyof Libro): void {
+    if (this.criterioActual === criterio) {
+      this.ordenAscendente = !this.ordenAscendente;
+    } else {
+      this.criterioActual = criterio;
+      this.ordenAscendente = true;
+    }
+    
+    this.aplicarOrdenamiento();
+  }
+
+  private aplicarOrdenamiento(): void {
+    this.libros.sort((a, b) => {
+      const valorA = String(a[this.criterioActual] || '').toLowerCase();
+      const valorB = String(b[this.criterioActual] || '').toLowerCase();
+
+      if (this.ordenAscendente) {
+        return valorA.localeCompare(valorB);
+      } else {
+        return valorB.localeCompare(valorA);
       }
     });
   }

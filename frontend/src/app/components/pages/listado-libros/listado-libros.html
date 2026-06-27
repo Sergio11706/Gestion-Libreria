@@ -26,13 +26,26 @@
       <table class="tabla-libros" *ngIf="libros.length > 0; else sinLibros">
         <thead>
           <tr>
-            <th>Título</th>
-            <th>Autor</th>
-            <th>Categoría</th>
+            <th (click)="ordenarLibros('titulo')" style="cursor: pointer; user-select: none;" title="Ordenar por título">
+              Título
+              <span *ngIf="criterioActual === 'titulo'">{{ ordenAscendente ? '↑' : '↓' }}</span>
+            </th>
+            
+            <th (click)="ordenarLibros('autor')" style="cursor: pointer; user-select: none;" title="Ordenar por autor">
+              Autor
+              <span *ngIf="criterioActual === 'autor'">{{ ordenAscendente ? '↑' : '↓' }}</span>
+            </th>
+            
+            <th (click)="ordenarLibros('categoria')" style="cursor: pointer; user-select: none;" title="Ordenar por categoría">
+              Categoría
+              <span *ngIf="criterioActual === 'categoria'">{{ ordenAscendente ? '↑' : '↓' }}</span>
+            </th>
+            
             <th>Stock</th>
             <th>Acciones</th>
           </tr>
         </thead>
+        
         <tbody>
           <tr *ngFor="let libro of libros" class="fila-libro">
             <td>{{ libro.titulo }}</td>

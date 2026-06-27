@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   validarUsuario,
+  validarEmpleado,
   crearUsuario,
   actualizarUsuario,
   eliminarUsuario,
@@ -10,6 +11,7 @@ const {
 } = require('../controllers/UsuarioController');
 
 router.post('/validar', validarUsuario);
+router.post('/validar-empleado', validarEmpleado);
 router.post('/', crearUsuario);
 router.get('/', obtenerUsuarios);
 router.get('/:id', obtenerUsuarioPorId);

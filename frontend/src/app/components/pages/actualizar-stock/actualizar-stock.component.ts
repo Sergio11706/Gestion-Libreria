@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Libro } from '../../../models/libro.model';
 import { LibroService } from '../../../services/libro.service';
@@ -23,7 +23,11 @@ export class ActualizarStockComponent implements OnInit {
   mostrandoConfirmacion = false;
   actualizando = false;
 
-  constructor(private libroService: LibroService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private libroService: LibroService,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -47,15 +51,22 @@ export class ActualizarStockComponent implements OnInit {
     });
   }
 
-  calcularStockResultante() {
+  calcularStockResultante(form: NgForm) {
     if (!this.libro) {
       this.error = 'No hay libro cargado.';
       return;
     }
 
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+
     const cantidad = Number(this.cantidadADescontar);
-    if (isNaN(cantidad) || cantidad < 0) {
-      this.error = 'Ingresá una cantidad válida para descontar.';
+    if (cantidad > this.libro.stock) {
+      this.error = `No podés descontar más de ${this.libro.stock} unidades.`;
+      this.mostrandoConfirmacion = false;
+      this.stockResultante = null;
       return;
     }
 
@@ -67,6 +78,11 @@ export class ActualizarStockComponent implements OnInit {
   actualizarStock() {
     if (!this.libro || this.stockResultante == null) {
       this.error = 'No se encontró el stock resultante para actualizar.';
+      return;
+    }
+
+    if (this.stockResultante < 0) {
+      this.error = 'El stock resultante no puede ser negativo.';
       return;
     }
 

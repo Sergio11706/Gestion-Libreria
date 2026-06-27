@@ -3,7 +3,9 @@ const express = require('express');
 const { pool } = require('./config/database');
 const UsuarioRoutes = require('./routes/UsuarioRoutes');
 const LibroRoutes = require('./routes/LibroRoutes');
+const EmpleadoRoutes = require('./routes/EmpleadoRoutes');
 const { sequelize } = require('./config/sequelize');
+const { seedEncargadoDemo } = require('./config/seed');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,6 +30,7 @@ app.get('/api/health', async (req, res) => {
   try {
     await sequelize.sync({ alter: true });
     console.log('Tablas sincronizadas');
+    await seedEncargadoDemo();
   } catch (error) {
     console.error('Error sincronizando tablas:', error);
   }
@@ -35,6 +38,7 @@ app.get('/api/health', async (req, res) => {
 
 app.use('/api/usuarios', UsuarioRoutes);
 app.use('/api/libros', LibroRoutes);
+app.use('/api/empleados', EmpleadoRoutes);
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor backend en http://0.0.0.0:${PORT}`);

@@ -93,44 +93,6 @@
   letter-spacing: 0.08em;
 }
 
-/* ── Selector de rol ────────────────────────────────── */
-.role-switch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-  padding: 0.35rem;
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-}
-
-.role-btn {
-  height: 40px;
-  border: none;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background var(--transition),
-    color var(--transition),
-    box-shadow var(--transition);
-}
-
-.role-btn.active {
-  background: var(--color-primary);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.22);
-}
-
-.role-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 /* ── Divider ────────────────────────────────────────── */
 .login-divider {
   height: 1px;

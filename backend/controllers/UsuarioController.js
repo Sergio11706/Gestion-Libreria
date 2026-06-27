@@ -1,4 +1,4 @@
-const Usuario = require('../models/Usuario');
+const { Usuario, Encargado, Empleado } = require('../config/sequelize');
 
 const validarUsuario = async (req, res) => {
   try {
@@ -9,14 +9,62 @@ const validarUsuario = async (req, res) => {
     }
 
     const usuario = await Usuario.findOne({
-      where: { nombre_usuario, contraseña }
+      where: { nombre_usuario, contraseña },
+      include: [{
+        model: Encargado,
+        as: 'encargado',
+        required: true
+      }]
     });
 
     if (!usuario) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
+      return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
     }
 
-    return res.json(usuario);
+    return res.json({
+      rol: 'encargado',
+      id_usuario: usuario.id_usuario,
+      nombre_usuario: usuario.nombre_usuario,
+      encargado: usuario.encargado
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const validarEmpleado = async (req, res) => {
+  try {
+    const { nombre_usuario, contraseña } = req.body;
+
+    if (!nombre_usuario || !contraseña) {
+      return res.status(400).json({ error: 'nombre_usuario y contraseña son requeridos' });
+    }
+
+    const usuario = await Usuario.findOne({
+      where: { nombre_usuario, contraseña },
+      include: [{
+        model: Empleado,
+        as: 'empleado',
+        required: true
+      }]
+    });
+
+    if (!usuario) {
+      return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+    }
+
+    return res.json({
+      rol: 'empleado',
+      id_usuario: usuario.id_usuario,
+      nombre_usuario: usuario.nombre_usuario,
+      empleado: {
+        id_usuario: usuario.empleado.id_usuario,
+        nombre: usuario.empleado.nombre,
+        apellido: usuario.empleado.apellido,
+        email: usuario.empleado.email,
+        telefono: usuario.empleado.telefono
+      }
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -93,6 +141,7 @@ const obtenerUsuarioPorId = async (req, res) => {
 
 module.exports = {
   validarUsuario,
+  validarEmpleado,
   crearUsuario,
   actualizarUsuario,
   eliminarUsuario,

@@ -1,123 +1,229 @@
 <div class="page">
-    <div class="card">
-      <div class="card-header">
-        <div class="icon">📚</div>
-        <div>
-          <h1>Registrar libro</h1>
-          <p class="subtitle">Completá los datos del nuevo libro</p>
-        </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">📚</div>
+      <div>
+        <h1>{{ esEdicion ? 'Editar libro' : 'Registrar libro' }}</h1>
+        <p class="subtitle">
+          {{ esEdicion ? 'Modificá los datos del libro' : 'Completá los datos del nuevo libro' }}
+        </p>
       </div>
-  
-      <!-- Alerta éxito -->
-      <div class="alert alert-success" *ngIf="exito">
-        ✅ Libro registrado exitosamente.
-      </div>
-  
-      <div class="alert alert-success" *ngIf="libroGuardado">
-        <div>
-          <strong>Libro guardado:</strong>
-          <div>Título: {{ libroGuardado.titulo }}</div>
-          <div>Autor: {{ libroGuardado.autor }}</div>
-          <div>ISBN: {{ libroGuardado.isbn }}</div>
-          <div>Editorial: {{ libroGuardado.editorial || 'No especificada' }}</div>
-          <div>Categoría: {{ libroGuardado.categoria || 'No especificada' }}</div>
-          <div>Precio venta: ${{ libroGuardado.precio_venta.toFixed(2) }}</div>
-          <div>Stock: {{ libroGuardado.stock }}</div>
-        </div>
-      </div>
-  
-      <!-- Alerta error -->
-      <div class="alert alert-error" *ngIf="errorMsg">
-        ⚠️ {{ errorMsg }}
-      </div>
-  
-      <form #registroForm="ngForm" (ngSubmit)="onSubmit(registroForm)" novalidate>
-
-        <!-- Sección: Identificación -->
-        <fieldset>
-          <legend>Identificación</legend>
-          <div class="grid-2">
-            <div class="field">
-              <label for="titulo">Título <span class="req">*</span></label>
-              <input id="titulo" name="titulo" type="text" [(ngModel)]="libro.titulo" placeholder="Ej: Cien años de soledad" required #titulo="ngModel" />
-              <span class="error" *ngIf="(titulo.touched || registroForm.submitted) && titulo.errors?.['required']">El título es obligatorio.</span>
-            </div>
-            <div class="field">
-              <label for="autor">Autor <span class="req">*</span></label>
-              <input id="autor" name="autor" type="text" [(ngModel)]="libro.autor" placeholder="Ej: Gabriel García Márquez" required #autor="ngModel" />
-              <span class="error" *ngIf="(autor.touched || registroForm.submitted) && autor.errors?.['required']">El autor es obligatorio.</span>
-            </div>
-          </div>
-  
-          <div class="grid-2">
-            <div class="field">
-              <label for="isbn">ISBN <span class="req">*</span></label>
-              <input id="isbn" name="isbn" type="text" [(ngModel)]="libro.isbn" placeholder="Ej: 978-950-07-0001-1" required #isbn="ngModel" />
-              <span class="error" *ngIf="(isbn.touched || registroForm.submitted) && isbn.errors?.['required']">El ISBN es obligatorio.</span>
-            </div>
-            <div class="field">
-              <label for="editorial">Editorial</label>
-              <input id="editorial" name="editorial" type="text" [(ngModel)]="libro.editorial" placeholder="Ej: Sudamericana" />
-            </div>
-          </div>
-        </fieldset>
-  
-        <!-- Sección: Clasificación -->
-        <fieldset>
-          <legend>Clasificación</legend>
-          <div class="grid-2">
-            <div class="field">
-              <label for="categoria">Categoría</label>
-              <select id="categoria" name="categoria" [(ngModel)]="libro.categoria">
-                <option value="">— Seleccioná —</option>
-                <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="fecha_ingreso">Fecha de ingreso</label>
-              <input id="fecha_ingreso" name="fecha_ingreso" type="date" [(ngModel)]="libro.fecha_ingreso" />
-            </div>
-          </div>
-        </fieldset>
-  
-        <!-- Sección: Precios y stock -->
-        <fieldset>
-          <legend>Precios y stock</legend>
-          <div class="grid-3">
-            <div class="field">
-              <label for="precio_costo">Precio de costo</label>
-              <div class="input-prefix">
-                <span>$</span>
-                <input id="precio_costo" name="precio_costo" type="number" [(ngModel)]="libro.precio_costo" min="0" step="0.01" placeholder="0.00" />
-              </div>
-            </div>
-            <div class="field">
-              <label for="precio_venta">Precio de venta</label>
-              <div class="input-prefix">
-                <span>$</span>
-                <input id="precio_venta" name="precio_venta" type="number" [(ngModel)]="libro.precio_venta" min="0" step="0.01" placeholder="0.00" />
-              </div>
-            </div>
-            <div class="field">
-              <label for="stock">Stock <span class="req">*</span></label>
-              <input id="stock" name="stock" type="number" [(ngModel)]="libro.stock" min="0" placeholder="0" #stock="ngModel" />
-              <span class="badge-low" *ngIf="libro.stock !== null && libro.stock < 5 && libro.stock >= 0">
-                ⚠ Stock bajo
-              </span>
-              <span class="error" *ngIf="(stock.touched || registroForm.submitted) && stock.errors?.['required']">El stock no puede ser negativo.</span>
-            </div>
-          </div>
-        </fieldset>
-  
-        <div class="actions">
-          <button type="button" class="btn-secondary" (click)="onReset(registroForm)">
-            Limpiar
-          </button>
-          <button type="submit" class="btn-primary" [disabled]="cargando">
-            {{ cargando ? 'Guardando...' : 'Registrar libro' }}
-          </button>
-        </div>
-  
-      </form>
     </div>
+
+    <div class="alert alert-success" *ngIf="exito">
+      {{ esEdicion ? 'Libro actualizado exitosamente.' : 'Libro registrado exitosamente.' }}
+    </div>
+
+    <div class="alert alert-success" *ngIf="libroGuardado">
+      <div>
+        <strong>{{ esEdicion ? 'Libro actualizado:' : 'Libro guardado:' }}</strong>
+        <div>Título: {{ libroGuardado.titulo }}</div>
+        <div>Autor: {{ libroGuardado.autor }}</div>
+        <div>ISBN: {{ libroGuardado.isbn }}</div>
+        <div>Editorial: {{ libroGuardado.editorial || 'No especificada' }}</div>
+        <div>Categoría: {{ libroGuardado.categoria || 'No especificada' }}</div>
+        <div>Precio venta: ${{ libroGuardado.precio_venta.toFixed(2) }}</div>
+        <div>Stock: {{ libroGuardado.stock }}</div>
+      </div>
+    </div>
+
+    <div class="alert alert-error" *ngIf="errorMsg">
+      {{ errorMsg }}
+    </div>
+
+    <form #registroForm="ngForm" (ngSubmit)="onSubmit(registroForm)" novalidate>
+      <fieldset>
+        <legend>Identificación</legend>
+        <div class="grid-2">
+          <div class="field">
+            <label for="titulo">Título <span class="req">*</span></label>
+            <input
+              id="titulo"
+              name="titulo"
+              type="text"
+              [(ngModel)]="libro.titulo"
+              placeholder="Ej: Cien años de soledad"
+              required
+              minlength="2"
+              maxlength="200"
+              #titulo="ngModel"
+              [disabled]="cargando"
+            />
+            <span class="error" *ngIf="(titulo.touched || registroForm.submitted) && titulo.errors?.['required']">
+              El título es obligatorio.
+            </span>
+            <span class="error" *ngIf="(titulo.touched || registroForm.submitted) && titulo.errors?.['minlength']">
+              El título debe tener al menos 2 caracteres.
+            </span>
+          </div>
+          <div class="field">
+            <label for="autor">Autor <span class="req">*</span></label>
+            <input
+              id="autor"
+              name="autor"
+              type="text"
+              [(ngModel)]="libro.autor"
+              placeholder="Ej: Gabriel García Márquez"
+              required
+              minlength="2"
+              maxlength="120"
+              #autor="ngModel"
+              [disabled]="cargando"
+            />
+            <span class="error" *ngIf="(autor.touched || registroForm.submitted) && autor.errors?.['required']">
+              El autor es obligatorio.
+            </span>
+            <span class="error" *ngIf="(autor.touched || registroForm.submitted) && autor.errors?.['minlength']">
+              El autor debe tener al menos 2 caracteres.
+            </span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="isbn">ISBN <span class="req">*</span></label>
+            <input
+              id="isbn"
+              name="isbn"
+              type="text"
+              [(ngModel)]="libro.isbn"
+              placeholder="Ej: 978-950-07-0001-1"
+              required
+              minlength="10"
+              maxlength="17"
+              #isbn="ngModel"
+              [disabled]="cargando"
+            />
+            <span class="error" *ngIf="(isbn.touched || registroForm.submitted) && isbn.errors?.['required']">
+              El ISBN es obligatorio.
+            </span>
+            <span class="error" *ngIf="(isbn.touched || registroForm.submitted) && isbn.errors?.['minlength']">
+              El ISBN debe tener al menos 10 caracteres.
+            </span>
+          </div>
+          <div class="field">
+            <label for="editorial">Editorial</label>
+            <input
+              id="editorial"
+              name="editorial"
+              type="text"
+              [(ngModel)]="libro.editorial"
+              placeholder="Ej: Sudamericana"
+              maxlength="120"
+              [disabled]="cargando"
+            />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Clasificación</legend>
+        <div class="grid-2">
+          <div class="field">
+            <label for="categoria">Categoría</label>
+            <select id="categoria" name="categoria" [(ngModel)]="libro.categoria" [disabled]="cargando">
+              <option value="">— Seleccioná —</option>
+              <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fecha_ingreso">Fecha de ingreso</label>
+            <input
+              id="fecha_ingreso"
+              name="fecha_ingreso"
+              type="date"
+              [(ngModel)]="libro.fecha_ingreso"
+              [max]="hoy"
+              #fechaIngreso="ngModel"
+              [disabled]="cargando"
+            />
+            <span class="error" *ngIf="(fechaIngreso.touched || registroForm.submitted) && fechaIngreso.errors?.['max']">
+              La fecha no puede ser futura.
+            </span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Precios y stock</legend>
+        <div class="grid-3">
+          <div class="field">
+            <label for="precio_costo">Precio de costo</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input
+                id="precio_costo"
+                name="precio_costo"
+                type="number"
+                [(ngModel)]="libro.precio_costo"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                #precioCosto="ngModel"
+                [disabled]="cargando"
+              />
+            </div>
+            <span class="error" *ngIf="(precioCosto.touched || registroForm.submitted) && precioCosto.errors?.['min']">
+              El precio de costo no puede ser negativo.
+            </span>
+          </div>
+          <div class="field">
+            <label for="precio_venta">Precio de venta</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input
+                id="precio_venta"
+                name="precio_venta"
+                type="number"
+                [(ngModel)]="libro.precio_venta"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                #precioVenta="ngModel"
+                [disabled]="cargando"
+              />
+            </div>
+            <span class="error" *ngIf="(precioVenta.touched || registroForm.submitted) && precioVenta.errors?.['min']">
+              El precio de venta no puede ser negativo.
+            </span>
+          </div>
+          <div class="field">
+            <label for="stock">Stock <span class="req">*</span></label>
+            <input
+              id="stock"
+              name="stock"
+              type="number"
+              [(ngModel)]="libro.stock"
+              min="0"
+              required
+              placeholder="0"
+              #stock="ngModel"
+              [disabled]="cargando"
+            />
+            <span class="badge-low" *ngIf="libro.stock !== null && libro.stock < 5 && libro.stock >= 0">
+              Stock bajo
+            </span>
+            <span class="error" *ngIf="(stock.touched || registroForm.submitted) && stock.errors?.['required']">
+              El stock es obligatorio.
+            </span>
+            <span class="error" *ngIf="(stock.touched || registroForm.submitted) && stock.errors?.['min']">
+              El stock no puede ser negativo.
+            </span>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" class="btn-secondary" (click)="onReset(registroForm)" [disabled]="cargando">
+          Limpiar
+        </button>
+        <button type="button" class="btn-secondary" *ngIf="esEdicion" (click)="cancelarEdicion()" [disabled]="cargando">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="cargando">
+          {{ cargando ? 'Guardando...' : (esEdicion ? 'Guardar cambios' : 'Registrar libro') }}
+        </button>
+      </div>
+    </form>
   </div>
+</div>

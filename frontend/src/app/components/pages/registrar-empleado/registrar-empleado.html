@@ -1,0 +1,215 @@
+<div class="card">
+  <div class="card-header">
+    <div class="icon">👤</div>
+    <div>
+      <h1>{{ esEdicion ? 'Editar empleado' : 'Registrar empleado' }}</h1>
+      <p class="subtitle">
+        {{ esEdicion ? 'Modificá los datos del empleado' : 'Creá el usuario y los datos del empleado' }}
+      </p>
+    </div>
+  </div>
+
+  <div class="alert alert-success" *ngIf="exito">
+    {{ esEdicion ? 'Empleado actualizado exitosamente.' : 'Empleado registrado exitosamente.' }}
+  </div>
+
+  <div class="alert alert-success" *ngIf="empleadoGuardado">
+    <div>
+      <strong>{{ esEdicion ? 'Empleado actualizado:' : 'Empleado guardado:' }}</strong>
+      <div>Usuario: {{ empleadoGuardado.nombre_usuario }}</div>
+      <div>Nombre: {{ empleadoGuardado.nombre }} {{ empleadoGuardado.apellido }}</div>
+      <div>Email: {{ empleadoGuardado.email }}</div>
+      <div>Teléfono: {{ empleadoGuardado.telefono }}</div>
+    </div>
+  </div>
+
+  <div class="alert alert-error" *ngIf="errorMsg">
+    {{ errorMsg }}
+  </div>
+
+  <form #registroForm="ngForm" (ngSubmit)="onSubmit(registroForm)" novalidate>
+    <fieldset>
+      <legend>Acceso al sistema</legend>
+      <div class="grid-2">
+        <div class="field">
+          <label for="nombre_usuario">Usuario <span class="req">*</span></label>
+          <input
+            id="nombre_usuario"
+            name="nombre_usuario"
+            type="text"
+            [(ngModel)]="empleado.nombre_usuario"
+            placeholder="Ej: jperez"
+            required
+            minlength="3"
+            maxlength="50"
+            pattern="^[a-zA-Z0-9._-]+$"
+            #nombreUsuario="ngModel"
+            [disabled]="cargando"
+          />
+          <span class="error" *ngIf="(nombreUsuario.touched || registroForm.submitted) && nombreUsuario.errors?.['required']">
+            El usuario es obligatorio.
+          </span>
+          <span class="error" *ngIf="(nombreUsuario.touched || registroForm.submitted) && nombreUsuario.errors?.['minlength']">
+            El usuario debe tener al menos 3 caracteres.
+          </span>
+          <span class="error" *ngIf="(nombreUsuario.touched || registroForm.submitted) && nombreUsuario.errors?.['pattern']">
+            Solo letras, números, puntos, guiones y guiones bajos.
+          </span>
+        </div>
+        <div class="field">
+          <label for="password">
+            Contraseña
+            <span class="req" *ngIf="!esEdicion">*</span>
+            <span class="hint" *ngIf="esEdicion">(opcional)</span>
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            placeholder="{{ esEdicion ? 'Dejar vacío para no cambiar' : 'Contraseña del empleado' }}"
+            [required]="!esEdicion"
+            minlength="4"
+            #passwordField="ngModel"
+            [disabled]="cargando"
+          />
+          <span class="error" *ngIf="(passwordField.touched || registroForm.submitted) && passwordField.errors?.['required']">
+            La contraseña es obligatoria.
+          </span>
+          <span class="error" *ngIf="(passwordField.touched || registroForm.submitted) && passwordField.errors?.['minlength']">
+            La contraseña debe tener al menos 4 caracteres.
+          </span>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="confirmarPassword">
+            Confirmar contraseña
+            <span class="req" *ngIf="!esEdicion">*</span>
+          </label>
+          <input
+            id="confirmarPassword"
+            name="confirmarPassword"
+            type="password"
+            [(ngModel)]="confirmarPassword"
+            placeholder="Repetí la contraseña"
+            [required]="!esEdicion"
+            #confirmar="ngModel"
+            [disabled]="cargando"
+          />
+          <span class="error" *ngIf="(confirmar.touched || registroForm.submitted) && confirmar.errors?.['required']">
+            Confirmá la contraseña.
+          </span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Datos personales</legend>
+      <div class="grid-2">
+        <div class="field">
+          <label for="nombre">Nombre <span class="req">*</span></label>
+          <input
+            id="nombre"
+            name="nombre"
+            type="text"
+            [(ngModel)]="empleado.nombre"
+            placeholder="Ej: Juan"
+            required
+            minlength="2"
+            maxlength="80"
+            #nombre="ngModel"
+            [disabled]="cargando"
+          />
+          <span class="error" *ngIf="(nombre.touched || registroForm.submitted) && nombre.errors?.['required']">
+            El nombre es obligatorio.
+          </span>
+          <span class="error" *ngIf="(nombre.touched || registroForm.submitted) && nombre.errors?.['minlength']">
+            El nombre debe tener al menos 2 caracteres.
+          </span>
+        </div>
+        <div class="field">
+          <label for="apellido">Apellido <span class="req">*</span></label>
+          <input
+            id="apellido"
+            name="apellido"
+            type="text"
+            [(ngModel)]="empleado.apellido"
+            placeholder="Ej: Pérez"
+            required
+            minlength="2"
+            maxlength="80"
+            #apellido="ngModel"
+            [disabled]="cargando"
+          />
+          <span class="error" *ngIf="(apellido.touched || registroForm.submitted) && apellido.errors?.['required']">
+            El apellido es obligatorio.
+          </span>
+          <span class="error" *ngIf="(apellido.touched || registroForm.submitted) && apellido.errors?.['minlength']">
+            El apellido debe tener al menos 2 caracteres.
+          </span>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="email">Email <span class="req">*</span></label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="empleado.email"
+            placeholder="Ej: jperez@libreria.com"
+            required
+            email
+            maxlength="120"
+            #email="ngModel"
+            [disabled]="cargando"
+          />
+          <span class="error" *ngIf="(email.touched || registroForm.submitted) && email.errors?.['required']">
+            El email es obligatorio.
+          </span>
+          <span class="error" *ngIf="(email.touched || registroForm.submitted) && email.errors?.['email']">
+            Ingresá un email válido.
+          </span>
+        </div>
+        <div class="field">
+          <label for="telefono">Teléfono <span class="req">*</span></label>
+          <input
+            id="telefono"
+            name="telefono"
+            type="text"
+            [(ngModel)]="empleado.telefono"
+            placeholder="Ej: 3515559876"
+            required
+            minlength="6"
+            maxlength="20"
+            pattern="^[0-9+\-\s()]+$"
+            #telefono="ngModel"
+            [disabled]="cargando"
+          />
+          <span class="error" *ngIf="(telefono.touched || registroForm.submitted) && telefono.errors?.['required']">
+            El teléfono es obligatorio.
+          </span>
+          <span class="error" *ngIf="(telefono.touched || registroForm.submitted) && telefono.errors?.['minlength']">
+            El teléfono debe tener al menos 6 caracteres.
+          </span>
+          <span class="error" *ngIf="(telefono.touched || registroForm.submitted) && telefono.errors?.['pattern']">
+            Solo números, espacios, guiones y paréntesis.
+          </span>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="button" class="btn-secondary" (click)="onReset(registroForm)" [disabled]="cargando">
+        Limpiar
+      </button>
+      <button type="button" class="btn-secondary" *ngIf="esEdicion" (click)="cancelarEdicion()" [disabled]="cargando">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="cargando">
+        {{ cargando ? 'Guardando...' : (esEdicion ? 'Guardar cambios' : 'Registrar empleado') }}
+      </button>
+    </div>
+  </form>
+</div>

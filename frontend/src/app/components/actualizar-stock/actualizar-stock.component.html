@@ -1,0 +1,91 @@
+<div class="page">
+    <div class="container">
+  
+      <div class="header">
+        <div class="header-icon">📦</div>
+        <div>
+          <h1>Actualizar stock</h1>
+          <p class="subtitle">Buscá el libro por título o ISBN y modificá el stock</p>
+        </div>
+      </div>
+  
+      <!-- Alerta éxito -->
+      <div class="alert alert-success" *ngIf="exito">
+        ✅ Stock actualizado exitosamente.
+      </div>
+  
+      <!-- Sección: Búsqueda -->
+      <div class="card">
+        <p class="section-label">Búsqueda</p>
+        <div class="grid-2">
+          <div class="field">
+            <label>Título</label>
+            <input type="text" [formControl]="$any(b['titulo'])" placeholder="Ej: Cien años de soledad" />
+          </div>
+          <div class="field">
+            <label>ISBN</label>
+            <input type="text" [formControl]="$any(b['isbn'])" placeholder="Ej: 978-950-07-0001-1" />
+          </div>
+        </div>
+        <span class="error" *ngIf="errorBusqueda">⚠️ {{ errorBusqueda }}</span>
+        <button class="btn-primary btn-full" (click)="buscar()" [disabled]="buscando">
+          {{ buscando ? 'Buscando...' : '🔍 Buscar libro' }}
+        </button>
+      </div>
+  
+      <!-- Sección: Resultado -->
+      <div class="card" *ngIf="libroEncontrado">
+        <p class="section-label">Libro encontrado</p>
+        <div class="grid-2 info-grid">
+          <div>
+            <p class="info-label">Título</p>
+            <p class="info-value">{{ libroEncontrado.titulo }}</p>
+          </div>
+          <div>
+            <p class="info-label">Autor</p>
+            <p class="info-value">{{ libroEncontrado.autor }}</p>
+          </div>
+          <div>
+            <p class="info-label">ISBN</p>
+            <p class="info-value">{{ libroEncontrado.isbn }}</p>
+          </div>
+          <div>
+            <p class="info-label">Editorial</p>
+            <p class="info-value">{{ libroEncontrado.editorial }}</p>
+          </div>
+        </div>
+  
+        <div class="badge-stock" [class.badge-low]="libroEncontrado.tiene_stock_bajo" [class.badge-ok]="!libroEncontrado.tiene_stock_bajo">
+          <span *ngIf="libroEncontrado.tiene_stock_bajo">⚠ Stock actual: {{ libroEncontrado.stock }} unidades — stock bajo</span>
+          <span *ngIf="!libroEncontrado.tiene_stock_bajo">✅ Stock actual: {{ libroEncontrado.stock }} unidades</span>
+        </div>
+      </div>
+  
+      <!-- Sección: Nuevo stock -->
+      <div class="card" *ngIf="libroEncontrado">
+        <p class="section-label">Nuevo stock</p>
+        <form [formGroup]="stockForm" (ngSubmit)="guardar()" novalidate>
+          <div class="grid-2">
+            <div class="field">
+              <label>Cantidad nueva <span class="req">*</span></label>
+              <input type="number" formControlName="stock" min="0" placeholder="0" />
+              <span class="error" *ngIf="f['stock'].touched && f['stock'].errors?.['required']">La cantidad es obligatoria.</span>
+              <span class="error" *ngIf="f['stock'].touched && f['stock'].errors?.['min']">No puede ser negativo.</span>
+            </div>
+            <div class="field">
+              <label>Motivo</label>
+              <select formControlName="motivo">
+                <option value="">— Seleccioná —</option>
+                <option *ngFor="let m of motivos" [value]="m">{{ m }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+            <button type="submit" class="btn-primary">💾 Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+  
+    </div>
+  </div>

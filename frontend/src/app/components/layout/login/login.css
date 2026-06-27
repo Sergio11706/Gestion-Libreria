@@ -1,0 +1,405 @@
+/* ── Variables ──────────────────────────────────────── */
+:host {
+  --color-primary:      #1E3A5F;
+  --color-secondary:    #2D6A8E;
+  --color-accent:       #D4A017;
+  --color-accent-dark:  #b8880f;
+  --color-bg:           #F5F7FA;
+  --color-bg-card:      #ffffff;
+  --color-text:         #2C2C2C;
+  --color-text-muted:   #6B7280;
+  --color-border:       #DDE3EC;
+  --color-input-focus:  #2D6A8E;
+  --color-input-bg:     #F8FAFC;
+  --shadow-card:        0 4px 24px rgba(30, 58, 95, 0.10),
+                        0 1px 4px  rgba(30, 58, 95, 0.06);
+  --shadow-btn:         0 2px 8px  rgba(212, 160, 23, 0.30);
+  --radius-card:        14px;
+  --radius-input:       8px;
+  --radius-btn:         8px;
+  --transition:         0.22s ease;
+}
+
+/* ── Reset base ─────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Wrapper / fondo ────────────────────────────────── */
+.login-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(45, 106, 142, 0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 90%,  rgba(30, 58,  95, 0.08) 0%, transparent 60%);
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Card ───────────────────────────────────────────── */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  padding: 2.5rem 2.25rem 2rem;
+  animation: fadeInUp 0.45s ease both;
+}
+
+/* ── Brand ──────────────────────────────────────────── */
+.login-brand {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: var(--color-primary);
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(30, 58, 95, 0.22);
+}
+
+.brand-icon i {
+  font-size: 1.75rem;
+  color: var(--color-accent);
+}
+
+.brand-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.3rem;
+}
+
+.brand-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Selector de rol ────────────────────────────────── */
+.role-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding: 0.35rem;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.role-btn {
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    box-shadow var(--transition);
+}
+
+.role-btn.active {
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.22);
+}
+
+.role-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Divider ────────────────────────────────────────── */
+.login-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-border) 30%,
+    var(--color-border) 70%,
+    transparent 100%
+  );
+  margin-bottom: 1.75rem;
+}
+
+/* ── Formulario ─────────────────────────────────────── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.alert-error {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius-input);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Input con ícono ────────────────────────────────── */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.9rem;
+  display: flex;
+  align-items: center;
+  color: var(--color-secondary);
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: color var(--transition);
+}
+
+.form-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 1rem 0 2.6rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-input-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  outline: none;
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.form-input::placeholder {
+  color: #b0b8c4;
+  font-size: 0.875rem;
+}
+
+.form-input:hover {
+  border-color: #b4c3d6;
+  background: #ffffff;
+}
+
+.form-input:focus {
+  border-color: var(--color-input-focus);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(45, 106, 142, 0.12);
+}
+
+.form-input:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+  color: var(--color-secondary);
+}
+
+/* ── Checkbox ───────────────────────────────────────── */
+.form-options {
+  margin-top: 0.1rem;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+
+.checkbox-input {
+  display: none;
+}
+
+.checkbox-custom {
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-input-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+}
+
+.checkbox-input:checked + .checkbox-custom {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.checkbox-input:checked + .checkbox-custom::after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+  display: block;
+}
+
+.checkbox-text {
+  font-size: 0.855rem;
+  color: var(--color-text-muted);
+}
+
+.field-error {
+  font-size: 0.76rem;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* ── Botón principal ────────────────────────────────── */
+.btn-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  height: 46px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--color-primary);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition:
+    background var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.btn-login i {
+  font-size: 1rem;
+}
+
+.btn-login:hover {
+  background: var(--color-accent-dark);
+  box-shadow: 0 4px 14px rgba(212, 160, 23, 0.42);
+  transform: translateY(-1px);
+}
+
+.btn-login:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(212, 160, 23, 0.25);
+}
+
+.btn-login:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Footer ─────────────────────────────────────────── */
+.login-footer {
+  margin-top: 1.75rem;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 0.76rem;
+  color: #b0b8c4;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.footer-text i {
+  font-size: 0.75rem;
+  color: var(--color-accent);
+}
+
+.footer-text a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+/* ── Animación de entrada ───────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 2rem 1.25rem 1.75rem;
+    border-radius: 10px;
+  }
+
+  .brand-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .brand-title {
+    font-size: 1.2rem;
+  }
+
+  .form-input {
+    height: 48px;
+    font-size: 1rem;
+  }
+
+  .btn-login {
+    height: 50px;
+    font-size: 0.95rem;
+  }
+}

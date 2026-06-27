@@ -1,0 +1,28 @@
+<div class="panel-wrapper" *ngIf="empleado">
+  <header class="panel-header">
+    <div>
+      <h1>Panel del empleado</h1>
+      <p *ngIf="recienCreado">Empleado registrado correctamente.</p>
+    </div>
+    <div class="header-actions">
+      <a *ngIf="esVistaEncargado" routerLink="/empleados" class="btn-link">Volver a empleados</a>
+      <button *ngIf="!esVistaEncargado" type="button" class="btn-logout" (click)="cerrarSesion()">Salir</button>
+    </div>
+  </header>
+
+  <section class="panel-card">
+    <h2>Bienvenido/a, {{ empleado.nombre }} {{ empleado.apellido }}</h2>
+    <p class="subtitle">Esta es la vista base del empleado. Tus compañeros completarán aquí las funciones del rol.</p>
+
+    <div class="info-grid">
+      <div><strong>Usuario:</strong> {{ empleado.nombre_usuario }}</div>
+      <div><strong>Email:</strong> {{ empleado.email }}</div>
+      <div><strong>Teléfono:</strong> {{ empleado.telefono }}</div>
+    </div>
+
+    <div class="placeholder">
+      <i class="fa-solid fa-screwdriver-wrench"></i>
+      <p>Módulos pendientes de implementación por el equipo.</p>
+    </div>
+  </section>
+</div>

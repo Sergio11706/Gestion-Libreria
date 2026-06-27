@@ -1,0 +1,24 @@
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Gestión de Librería</span>
+    </div>
+
+    <nav class="nav-links">
+      <a routerLink="/empleados" routerLinkActive="active">Empleados</a>
+      <a routerLink="/libros" routerLinkActive="active">Libros</a>
+    </nav>
+
+    <div class="user-area">
+      <span class="user-name">
+        <i class="fa-solid fa-user-tie"></i>
+        {{ nombreEncargado }}
+      </span>
+      <button type="button" class="btn-logout" (click)="cerrarSesion()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Salir
+      </button>
+    </div>
+  </div>
+</header>

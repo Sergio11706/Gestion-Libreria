@@ -1,0 +1,67 @@
+<div class="page-content">
+  <div class="content-card">
+    <div class="card-header">
+      <div class="icon">👥</div>
+      <div>
+        <h1>Gestión de empleados</h1>
+        <p class="subtitle">Registrá y administrá los empleados de la librería</p>
+      </div>
+    </div>
+
+    <div class="alert alert-error" *ngIf="errorMsg">
+      {{ errorMsg }}
+    </div>
+
+    <div class="toolbar">
+      <button class="btn-primary" type="button" (click)="toggleFormulario()">
+        {{ mostrarFormulario ? 'Cerrar formulario' : 'Registrar empleado' }}
+      </button>
+    </div>
+
+    <div *ngIf="mostrarFormulario" class="form-panel">
+      <app-registrar-empleado
+        [empleadoEditar]="empleadoEnEdicion"
+        (saved)="onEmpleadoGuardado($event)"
+        (cancelado)="cerrarFormulario()"
+      ></app-registrar-empleado>
+    </div>
+
+    <ng-container *ngIf="!cargando; else cargandoTemplate">
+      <table class="tabla-datos" *ngIf="empleados.length > 0; else sinEmpleados">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let empleado of empleados">
+            <td>{{ empleado.nombre_usuario }}</td>
+            <td>{{ empleado.nombre }} {{ empleado.apellido }}</td>
+            <td>{{ empleado.email }}</td>
+            <td>{{ empleado.telefono }}</td>
+            <td class="acciones">
+              <button type="button" class="btn-edit" (click)="editarEmpleado(empleado)">
+                Editar
+              </button>
+              <button type="button" class="btn-danger" (click)="eliminarEmpleado(empleado)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+
+    <ng-template #cargandoTemplate>
+      <div class="estado-vacio">Cargando empleados...</div>
+    </ng-template>
+
+    <ng-template #sinEmpleados>
+      <div class="estado-vacio">No hay empleados registrados.</div>
+    </ng-template>
+  </div>
+</div>

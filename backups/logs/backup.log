@@ -1,0 +1,24 @@
+[2026-06-26 15:03:48] ===================================================
+[2026-06-26 15:03:48] Iniciando backup de tablas: usuarios,libros
+[2026-06-26 15:03:48] ❌ ERROR: mysqldump falló (código 2) o generó un archivo vacío
+[2026-06-26 15:04:08] ===================================================
+[2026-06-26 15:04:08] Iniciando backup de tablas: usuarios,libros
+[2026-06-26 15:04:08] ❌ ERROR: mysqldump falló (código 2) o generó un archivo vacío
+[2026-06-27 10:45:19] ===================================================
+[2026-06-27 10:45:19] Iniciando backup de tablas: usuarios,libros
+[2026-06-27 10:45:20] ❌ ERROR: mysqldump falló (código 2) o generó un archivo vacío
+[2026-06-27 11:00:27] ===================================================
+[2026-06-27 11:00:27] Iniciando backup de tablas: usuarios,libros
+[2026-06-27 11:00:27] ❌ ERROR: mysqldump falló (código 2) o generó un archivo vacío
+[2026-06-27 11:15:29] ===================================================
+[2026-06-27 11:15:29] Iniciando backup de tablas: usuarios,libros
+[2026-06-27 11:15:29] ❌ ERROR: mysqldump falló (código 6) o generó un archivo vacío
+[2026-06-27 11:26:35] ===================================================
+[2026-06-27 11:26:35] Iniciando backup de tablas: Usuario, Libro
+[2026-06-27 11:26:35] Dump generado: /backups/backup_gestion_libreria_2026-06-27_11-26-35.sql (4.0K)
+  adding: backup_gestion_libreria_2026-06-27_11-26-35.sql (deflated 68%)
+[2026-06-27 11:26:35] ✅ Backup comprimido: /backups/backup_gestion_libreria_2026-06-27_11-26-35.sql.zip (4.0K)
+[2026-06-27 11:26:35] Eliminando backups con más de 4 semanas (28 días)...
+[2026-06-27 11:26:35] Backups antiguos eliminados: 0
+[2026-06-27 11:26:35] Backup finalizado correctamente ✅
+[2026-06-27 11:26:35] ===================================================

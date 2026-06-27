@@ -56,5 +56,25 @@ services:
       - frontend
       - backend
 
+  # Backup automático semanal de usuarios y libros
+  backup:
+    build:
+      context: ./backup
+    container_name: gestion_libreria_backup
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      BACKUP_TABLES: "${BACKUP_TABLES:-usuarios,libros}"
+      BACKUP_RETENTION_WEEKS: "${BACKUP_RETENTION_WEEKS:-4}"
+      BACKUP_CRON_SCHEDULE: "${BACKUP_CRON_SCHEDULE:-0 3 * * 0}"
+      BACKUP_RUN_ON_START: "${BACKUP_RUN_ON_START:-false}"
+    volumes:
+      - ./backups:/backups
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   db_data:

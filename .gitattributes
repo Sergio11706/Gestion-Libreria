@@ -1,0 +1,8 @@
+# Fuerza LF (Unix) para archivos que se ejecutan dentro de contenedores Linux.
+# Sin esto, Git en Windows puede convertirlos a CRLF al hacer checkout
+# (core.autocrlf=true es el default), rompiendo el shebang (#!/bin/bash)
+# y causando errores como "exec /entrypoint.sh: no such file or directory".
+
+*.sh text eol=lf
+Dockerfile text eol=lf
+entrypoint.sh text eol=lf

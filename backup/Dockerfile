@@ -14,6 +14,8 @@ WORKDIR /scripts
 COPY scripts/backup.sh /scripts/backup.sh
 COPY entrypoint.sh /entrypoint.sh
 
-RUN chmod +x /scripts/backup.sh /entrypoint.sh
+# Normaliza finales de línea (por si el repo trae CRLF desde Windows) y da permisos
+RUN sed -i 's/\r$//' /scripts/backup.sh /entrypoint.sh \
+    && chmod +x /scripts/backup.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

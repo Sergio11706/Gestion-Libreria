@@ -22,3 +22,12 @@
 [2026-06-27 11:26:35] Backups antiguos eliminados: 0
 [2026-06-27 11:26:35] Backup finalizado correctamente ✅
 [2026-06-27 11:26:35] ===================================================
+[2026-06-27 20:07:56] ===================================================
+[2026-06-27 20:07:56] Iniciando backup de tablas: Usuario, Libro
+[2026-06-27 20:07:57] Dump generado: /backups/backup_gestion_libreria_2026-06-27_20-07-56.sql (4.0K)
+  adding: backup_gestion_libreria_2026-06-27_20-07-56.sql (deflated 68%)
+[2026-06-27 20:07:57] ✅ Backup comprimido: /backups/backup_gestion_libreria_2026-06-27_20-07-56.sql.zip (4.0K)
+[2026-06-27 20:07:57] Eliminando backups con más de 4 semanas (28 días)...
+[2026-06-27 20:07:57] Backups antiguos eliminados: 0
+[2026-06-27 20:07:57] Backup finalizado correctamente ✅
+[2026-06-27 20:07:57] ===================================================

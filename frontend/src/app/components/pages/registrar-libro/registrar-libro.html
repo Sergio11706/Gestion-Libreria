@@ -81,36 +81,28 @@
 
         <div class="grid-2">
           <div class="field">
-            <label for="isbn">ISBN <span class="req">*</span></label>
-            <input
-              id="isbn"
-              name="isbn"
-              type="text"
-              [(ngModel)]="libro.isbn"
-              placeholder="Ej: 978-950-07-0001-1"
-              required
-              minlength="10"
-              maxlength="17"
-              #isbn="ngModel"
-              [disabled]="cargando"
-              (blur)="onIsbnBlur()"
-            />
-            <span class="error" *ngIf="(isbn.touched || registroForm.submitted) && isbn.errors?.['required']">
-              El ISBN es obligatorio.
-            </span>
-            <span class="error" *ngIf="(isbn.touched || registroForm.submitted) && isbn.errors?.['minlength']">
-              El ISBN debe tener al menos 10 caracteres.
-            </span>
-            <span class="hint" *ngIf="validandoIsbn">
-              Validando ISBN…
-            </span>
-            <span class="error" *ngIf="!validandoIsbn && isbnValido === false">
-              {{ isbnInfoMsg }}
-            </span>
-            <span class="success" *ngIf="!validandoIsbn && isbnValido === true">
-              ✓ {{ isbnInfoMsg }}
-            </span>
-          </div>
+  <label for="isbn">ISBN <span class="req">*</span></label>
+  <input
+    id="isbn"
+    name="isbn"
+    type="text"
+    [(ngModel)]="libro.isbn"
+    placeholder="Ej: 9789500728065 o 978-950-07-2806-5"
+    required
+    minlength="10"
+    maxlength="17"
+    #isbnField="ngModel"
+    [disabled]="cargando"
+    (blur)="validarISBN()"
+    [class.isbn-valido]="isbnValido === true"
+    [class.isbn-invalido]="isbnValido === false"
+  />
+  <span class="error" *ngIf="(isbnField.touched || registroForm.submitted) && isbnField.errors?.['required']">
+    El ISBN es obligatorio.
+  </span>
+  <span class="isbn-msg isbn-msg--ok"    *ngIf="isbnValido === true">{{ isbnMsg }}</span>
+  <span class="isbn-msg isbn-msg--error" *ngIf="isbnValido === false && !isbnField.errors?.['required']">{{ isbnMsg }}</span>
+</div>
           <div class="field">
             <label for="editorial">Editorial</label>
             <input

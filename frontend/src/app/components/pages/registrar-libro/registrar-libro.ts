@@ -11,6 +11,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { LibroService } from '../../../services/libro.service';
 import { Libro } from '../../../models/libro.model';
 import { obtenerMensajeError } from '../../../utils/http-error.util';
+import * as ISBN from 'isbn3';
 
 @Component({
   selector: 'app-registrar-libro',
@@ -45,6 +46,10 @@ export class RegistrarLibro implements OnChanges {
   cargando = false;
   libroGuardado: Libro | null = null;
 
+  // Estado validación ISBN
+  isbnValido: boolean | null = null;   // null = sin validar, true = válido, false = inválido
+  isbnMsg = '';                         // mensaje a mostrar bajo el campo
+
   constructor(private libroService: LibroService) {}
 
   get esEdicion(): boolean {
@@ -61,15 +66,32 @@ export class RegistrarLibro implements OnChanges {
     }
   }
 
+  // Se llama en (blur) del campo ISBN y también desde onSubmit
   validarISBN(): boolean {
     const isbn = this.libro.isbn?.toString().trim() ?? '';
-    const normalized = isbn.replace(/[-\s]/g, '');
-    const isValid = /^(97(8|9))?[0-9]{10}$/.test(normalized) && (normalized.length === 10 || normalized.length === 13);
 
-    if (!isValid) {
-      this.errorMsg = 'El formato del ISBN no es válido (10 o 13 dígitos).';
+    if (!isbn) {
+      this.isbnValido = false;
+      this.isbnMsg = 'El ISBN es obligatorio.';
       return false;
     }
+
+    const parsed = ISBN.parse(isbn);
+
+    if (!parsed) {
+      this.isbnValido = false;
+      this.isbnMsg = 'El ISBN no es válido. Revisá que los dígitos sean correctos.';
+      return false;
+    }
+
+    // isbn3 devuelve el ISBN formateado con guiones correctamente
+    const formateado = parsed.isbn13h ?? parsed.isbn10h ?? isbn;
+
+    this.isbnValido = true;
+    this.isbnMsg = `ISBN válido ✔ — ${parsed.isIsbn13 ? 'ISBN-13' : 'ISBN-10'}: ${formateado}`;
+
+    // Reemplazar el valor del campo con el ISBN formateado
+    this.libro.isbn = formateado;
 
     return true;
   }
@@ -106,6 +128,7 @@ export class RegistrarLibro implements OnChanges {
       return;
     }
 
+    // Siempre revalidar al enviar por si el usuario no salió del campo
     if (!this.validarISBN()) {
       return;
     }
@@ -125,9 +148,7 @@ export class RegistrarLibro implements OnChanges {
     this.cargando = true;
     this.errorMsg = '';
 
-    const libro = this.prepararPayload();
-
-    this.libroService.registrarLibro(libro).subscribe({
+    this.libroService.registrarLibro(this.prepararPayload()).subscribe({
       next: (savedLibro) => {
         this.cargando = false;
         this.exito = true;
@@ -143,16 +164,12 @@ export class RegistrarLibro implements OnChanges {
   }
 
   actualizarLibro(): void {
-    if (!this.libroEditar) {
-      return;
-    }
+    if (!this.libroEditar) return;
 
     this.cargando = true;
     this.errorMsg = '';
 
-    const cambios = this.prepararPayload();
-
-    this.libroService.actualizarLibro(this.libroEditar.id_libro, cambios).subscribe({
+    this.libroService.actualizarLibro(this.libroEditar.id_libro, this.prepararPayload()).subscribe({
       next: (actualizado) => {
         this.cargando = false;
         this.exito = true;
@@ -182,7 +199,6 @@ export class RegistrarLibro implements OnChanges {
 
   private prepararPayload(): Omit<Libro, 'id_libro'> {
     const stock = Number(this.libro.stock) || 0;
-
     return {
       ...this.libro,
       titulo: this.libro.titulo.trim(),
@@ -199,13 +215,12 @@ export class RegistrarLibro implements OnChanges {
   }
 
   private cargarLibroParaEditar(): void {
-    if (!this.libroEditar) {
-      return;
-    }
-
+    if (!this.libroEditar) return;
     this.errorMsg = '';
     this.exito = false;
     this.libroGuardado = null;
+    this.isbnValido = true;
+    this.isbnMsg = '';
     this.libro = {
       titulo: this.libroEditar.titulo,
       autor: this.libroEditar.autor,
@@ -224,6 +239,8 @@ export class RegistrarLibro implements OnChanges {
     this.errorMsg = '';
     this.exito = false;
     this.libroGuardado = null;
+    this.isbnValido = null;
+    this.isbnMsg = '';
     this.libro = {
       titulo: '',
       autor: '',

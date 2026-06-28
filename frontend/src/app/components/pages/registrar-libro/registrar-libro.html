@@ -93,12 +93,22 @@
               maxlength="17"
               #isbn="ngModel"
               [disabled]="cargando"
+              (blur)="onIsbnBlur()"
             />
             <span class="error" *ngIf="(isbn.touched || registroForm.submitted) && isbn.errors?.['required']">
               El ISBN es obligatorio.
             </span>
             <span class="error" *ngIf="(isbn.touched || registroForm.submitted) && isbn.errors?.['minlength']">
               El ISBN debe tener al menos 10 caracteres.
+            </span>
+            <span class="hint" *ngIf="validandoIsbn">
+              Validando ISBN…
+            </span>
+            <span class="error" *ngIf="!validandoIsbn && isbnValido === false">
+              {{ isbnInfoMsg }}
+            </span>
+            <span class="success" *ngIf="!validandoIsbn && isbnValido === true">
+              ✓ {{ isbnInfoMsg }}
             </span>
           </div>
           <div class="field">

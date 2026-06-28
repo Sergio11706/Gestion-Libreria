@@ -4,6 +4,7 @@ const { pool } = require('./config/database');
 const UsuarioRoutes = require('./routes/UsuarioRoutes');
 const LibroRoutes = require('./routes/LibroRoutes');
 const EmpleadoRoutes = require('./routes/EmpleadoRoutes');
+const IsbnRoutes = require('./routes/IsbnRoutes');
 const { sequelize } = require('./config/sequelize');
 const { seedEncargadoDemo } = require('./config/seed');
 const app = express();
@@ -39,6 +40,8 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/usuarios', UsuarioRoutes);
 app.use('/api/libros', LibroRoutes);
 app.use('/api/empleados', EmpleadoRoutes);
+app.use('/api', IsbnRoutes);
+
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor backend en http://0.0.0.0:${PORT}`);

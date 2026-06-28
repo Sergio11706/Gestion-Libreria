@@ -9,6 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LibroService } from '../../../services/libro.service';
+import { IsbnService, ValidarIsbnResponse } from '../../../services/isbn.service';
 import { Libro } from '../../../models/libro.model';
 import { obtenerMensajeError } from '../../../utils/http-error.util';
 
@@ -45,7 +46,15 @@ export class RegistrarLibro implements OnChanges {
   cargando = false;
   libroGuardado: Libro | null = null;
 
-  constructor(private libroService: LibroService) {}
+  // Estado de la validación de ISBN contra el backend (formato + Google Books)
+  validandoIsbn = false;
+  isbnValido: boolean | null = null; // null = todavía no se consultó
+  isbnInfoMsg = '';
+
+  constructor(
+    private libroService: LibroService,
+    private isbnService: IsbnService
+  ) {}
 
   get esEdicion(): boolean {
     return !!this.libroEditar;
@@ -59,6 +68,51 @@ export class RegistrarLibro implements OnChanges {
         this.limpiarEstado();
       }
     }
+  }
+
+  /**
+   * Se dispara al salir del campo ISBN (blur).
+   * Valida formato + busca metadatos en Google Books vía el backend.
+   * Si el libro existe y los campos están vacíos, autocompleta Título/Autor/Editorial.
+   * Nunca bloquea el formulario: si el backend falla o el libro no aparece en Google Books,
+   * simplemente no autocompleta nada.
+   */
+  onIsbnBlur(): void {
+    const isbn = this.libro.isbn?.toString().trim() ?? '';
+    this.isbnValido = null;
+    this.isbnInfoMsg = '';
+
+    if (!isbn) {
+      return;
+    }
+
+    this.validandoIsbn = true;
+
+    this.isbnService.validar(isbn).subscribe({
+      next: (res: ValidarIsbnResponse) => {
+        this.validandoIsbn = false;
+        this.isbnValido = res.valido;
+
+        if (!res.valido) {
+          this.isbnInfoMsg = res.error || 'El formato del ISBN no es válido.';
+          return;
+        }
+
+        this.isbnInfoMsg = res.existe ? 'ISBN válido — datos encontrados.' : 'ISBN válido.';
+
+        // Autocompletar solo al registrar un libro nuevo (no al editar), y solo campos vacíos
+        if (!this.esEdicion) {
+          if (!this.libro.titulo && res.titulo) this.libro.titulo = res.titulo;
+          if (!this.libro.autor && res.autor) this.libro.autor = res.autor;
+          if (!this.libro.editorial && res.editorial) this.libro.editorial = res.editorial;
+        }
+      },
+      error: () => {
+        // Falla de red, backend caído, etc. -> no bloqueamos el registro, solo ocultamos el spinner
+        this.validandoIsbn = false;
+        this.isbnValido = null;
+      }
+    });
   }
 
   validarISBN(): boolean {

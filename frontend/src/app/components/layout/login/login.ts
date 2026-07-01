@@ -1,12 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { obtenerMensajeError } from '../../../utils/http-error.util';
-
-export type TipoAcceso = 'encargado' | 'empleado';
 
 @Component({
   selector: 'app-login',
@@ -15,8 +13,7 @@ export type TipoAcceso = 'encargado' | 'empleado';
   templateUrl: './login.html',
   styleUrls: ['./login.css'],
 })
-export class Login implements OnInit {
-  tipoAcceso: TipoAcceso = 'encargado';
+export class Login {
   nombreUsuario = '';
   password = '';
   recordarme = false;
@@ -26,31 +23,11 @@ export class Login implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    const tipo = this.route.snapshot.data['tipoAcceso'] as TipoAcceso | undefined;
-    if (tipo === 'encargado' || tipo === 'empleado') {
-      this.tipoAcceso = tipo;
-    }
-  }
-
   get subtitulo(): string {
-    return this.tipoAcceso === 'encargado'
-      ? 'Acceso encargado'
-      : 'Acceso empleado';
-  }
-
-  cambiarTipo(tipo: TipoAcceso): void {
-    if (this.tipoAcceso === tipo || this.cargando) {
-      return;
-    }
-
-    this.tipoAcceso = tipo;
-    this.errorMensaje = '';
-    this.cdr.markForCheck();
+    return 'Acceso al sistema';
   }
 
   iniciarSesion(form: NgForm): void {
@@ -70,18 +47,15 @@ export class Login implements OnInit {
       contraseña: this.password
     };
 
-    const login$ = this.tipoAcceso === 'encargado'
-      ? this.authService.loginEncargado(credentials, this.recordarme)
-      : this.authService.loginEmpleado(credentials, this.recordarme);
-
-    login$.pipe(
+    this.authService.login(credentials, this.recordarme).pipe(
       finalize(() => {
         this.cargando = false;
         this.cdr.markForCheck();
       })
     ).subscribe({
       next: () => {
-        const destino = this.tipoAcceso === 'encargado' ? '/empleados' : '/empleado/inicio';
+        const sesion = this.authService.getSesion();
+        const destino = sesion?.rol === 'empleado' ? '/libros' : '/empleados';
         this.router.navigate([destino]);
       },
       error: (error) => {

@@ -1,21 +1,13 @@
 const express = require('express');
-const router = express.Router();
-const {
-  validarUsuario,
-  validarEmpleado,
-  crearUsuario,
-  actualizarUsuario,
-  eliminarUsuario,
-  obtenerUsuarios,
-  obtenerUsuarioPorId
-} = require('../controllers/UsuarioController');
+const UsuarioController = require('../controllers/UsuarioController');
 
-router.post('/validar', validarUsuario);
-router.post('/validar-empleado', validarEmpleado);
-router.post('/', crearUsuario);
-router.get('/', obtenerUsuarios);
-router.get('/:id', obtenerUsuarioPorId);
-router.put('/:id', actualizarUsuario);
-router.delete('/:id', eliminarUsuario);
+const router = express.Router();
+
+router.post('/usuarios', UsuarioController.crear);
+router.post('/usuarios/validar', UsuarioController.validar);
+router.get('/empleados', UsuarioController.listarEmpleados);
+router.post('/empleados', UsuarioController.crearEmpleado);
+router.put('/empleados/:id', UsuarioController.actualizarEmpleado);
+router.delete('/empleados/:id', UsuarioController.eliminarEmpleado);
 
 module.exports = router;

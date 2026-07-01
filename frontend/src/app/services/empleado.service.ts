@@ -1,7 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CrearEmpleadoRequest, Empleado, ActualizarEmpleadoRequest } from '../models/empleado.model';
+import { Empleado } from '../models/usuario.model';
+
+export interface CrearEmpleadoRequest {
+  nombre_usuario: string;
+  contraseña: string;
+  nombre: string;
+  apellido: string;
+  email: string;
+  telefono: string;
+}
+
+export interface ActualizarEmpleadoRequest {
+  nombre_usuario?: string;
+  contraseña?: string;
+  nombre?: string;
+  apellido?: string;
+  email?: string;
+  telefono?: string;
+}
 
 @Injectable({
   providedIn: 'root'

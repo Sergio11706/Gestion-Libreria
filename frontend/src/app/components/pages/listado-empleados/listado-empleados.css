@@ -16,12 +16,12 @@
 }
 
 .page-content {
-  padding: 1.5rem;
+  padding: 1.75rem 1.25rem;
 }
 
 .content-card {
   width: 100%;
-  max-width: 980px;
+  max-width: 1100px;
   margin: 0 auto;
   background: var(--color-bg-card);
   border-radius: var(--radius-card);

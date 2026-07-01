@@ -22,7 +22,7 @@ export const encargadoGuard: CanActivateFn = () => {
   }
 
   if (authService.isEmpleadoLoggedIn()) {
-    return router.createUrlTree(['/empleado/inicio']);
+    return router.createUrlTree(['/libros']);
   }
 
   return router.createUrlTree(['/login']);
@@ -41,7 +41,7 @@ export const empleadoGuard: CanActivateFn = () => {
     return true;
   }
 
-  return router.createUrlTree(['/empleado/login']);
+  return router.createUrlTree(['/login']);
 };
 
 export const loginGuard: CanActivateFn = () => {
@@ -53,7 +53,7 @@ export const loginGuard: CanActivateFn = () => {
   }
 
   if (authService.isEmpleadoLoggedIn()) {
-    return router.createUrlTree(['/empleado/inicio']);
+    return router.createUrlTree(['/libros']);
   }
 
   return true;
@@ -64,7 +64,7 @@ export const empleadoLoginGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   if (authService.isEmpleadoLoggedIn()) {
-    return router.createUrlTree(['/empleado/inicio']);
+    return router.createUrlTree(['/libros']);
   }
 
   if (authService.isEncargadoLoggedIn()) {

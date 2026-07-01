@@ -12,7 +12,8 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { EmpleadoService } from '../../../services/empleado.service';
-import { ActualizarEmpleadoRequest, CrearEmpleadoRequest, Empleado } from '../../../models/empleado.model';
+import { Empleado } from '../../../models/usuario.model';
+import { ActualizarEmpleadoRequest, CrearEmpleadoRequest } from '../../../services/empleado.service';
 import { obtenerMensajeError } from '../../../utils/http-error.util';
 
 @Component({

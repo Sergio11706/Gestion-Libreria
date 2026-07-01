@@ -5,27 +5,18 @@ import { ListadoLibros } from './components/pages/listado-libros/listado-libros'
 import { RegistrarLibro } from './components/pages/registrar-libro/registrar-libro';
 import { ActualizarStockComponent } from './components/pages/actualizar-stock/actualizar-stock.component';
 import { ListadoEmpleados } from './components/pages/listado-empleados/listado-empleados';
-import { PanelEmpleado } from './components/pages/panel-empleado/panel-empleado';
-import {
-  authGuard,
-  encargadoGuard,
-  empleadoGuard,
-  empleadoLoginGuard,
-  loginGuard
-} from './guards/auth.guard';
+import {authGuard, encargadoGuard, loginGuard} from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: Login, canActivate: [loginGuard], data: { tipoAcceso: 'encargado' } },
-  { path: 'empleado/login', component: Login, canActivate: [empleadoLoginGuard], data: { tipoAcceso: 'empleado' } },
-  { path: 'empleado/inicio', component: PanelEmpleado, canActivate: [empleadoGuard] },
+  { path: 'login', component: Login, canActivate: [loginGuard] },
   {
     path: '',
     component: MainLayout,
-    canActivate: [authGuard, encargadoGuard],
+    canActivate: [authGuard],
     children: [
-      { path: 'empleados', component: ListadoEmpleados },
-      { path: 'registrar', component: RegistrarLibro },
+      { path: 'empleados', component: ListadoEmpleados, canActivate: [encargadoGuard] },
+      { path: 'registrar', component: RegistrarLibro, canActivate: [encargadoGuard] },
       { path: 'libros', component: ListadoLibros },
       { path: 'libros/actualizar/:id', component: ActualizarStockComponent },
     ]

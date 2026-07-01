@@ -1,32 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { UsuarioSesion } from '../models/usuario.model';
-import { Empleado } from '../models/empleado.model';
+import { Empleado, Encargado } from '../models/usuario.model';
 
 export interface LoginRequest {
   nombre_usuario: string;
   contraseña: string;
 }
 
+export interface UsuarioSesion {
+  rol: 'encargado' | 'empleado';
+  id_usuario: number;
+  nombre_usuario: string;
+  encargado?: Encargado;
+  empleado?: Empleado;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly encargadoLoginUrl = '/api/usuarios/validar';
-  private readonly empleadoLoginUrl = '/api/usuarios/validar-empleado';
+  private readonly loginUrl = '/api/usuarios/validar';
   private readonly storageKey = 'gestion_libreria_usuario';
 
   constructor(private http: HttpClient) {}
 
-  loginEncargado(credentials: LoginRequest, recordarme: boolean): Observable<UsuarioSesion> {
-    return this.http.post<UsuarioSesion>(this.encargadoLoginUrl, credentials).pipe(
-      tap((usuario) => this.guardarSesion(usuario, recordarme))
-    );
-  }
-
-  loginEmpleado(credentials: LoginRequest, recordarme: boolean): Observable<UsuarioSesion> {
-    return this.http.post<UsuarioSesion>(this.empleadoLoginUrl, credentials).pipe(
+  login(credentials: LoginRequest, recordarme: boolean): Observable<UsuarioSesion> {
+    return this.http.post<UsuarioSesion>(this.loginUrl, credentials).pipe(
       tap((usuario) => this.guardarSesion(usuario, recordarme))
     );
   }

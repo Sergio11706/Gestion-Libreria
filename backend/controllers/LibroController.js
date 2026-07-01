@@ -1,95 +1,86 @@
 const Libro = require('../models/Libro');
 
-const crearLibro = async (req, res) => {
+exports.listar = async (req, res) => {
   try {
-    const {
-      titulo,
-      autor,
-      isbn,
-      editorial,
-      categoria,
-      precio_costo,
-      precio_venta,
-      fecha_ingreso,
-      tiene_stock_bajo,
-      stock
-    } = req.body;
-
-    const nuevoLibro = await Libro.create({
-      titulo,
-      autor,
-      isbn,
-      editorial,
-      categoria,
-      precio_costo,
-      precio_venta,
-      fecha_ingreso,
-      tiene_stock_bajo,
-      stock
-    });
-
-    return res.status(201).json(nuevoLibro);
+    const libros = await Libro.findAll({ order: [['id_libro', 'ASC']] });
+    return res.json(libros);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error('Error al listar libros:', error);
+    return res.status(500).json({ message: 'Error del servidor' });
   }
 };
 
-const actualizarLibro = async (req, res) => {
+exports.obtenerPorId = async (req, res) => {
   try {
-    const { id } = req.params;
-    const libro = await Libro.findByPk(id);
+    const libro = await Libro.findByPk(req.params.id);
     if (!libro) {
-      return res.status(404).json({ error: 'Libro no encontrado' });
+      return res.status(404).json({ message: 'Libro no encontrado' });
+    }
+    return res.json(libro);
+  } catch (error) {
+    console.error('Error al obtener libro:', error);
+    return res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+exports.crear = async (req, res) => {
+  try {
+    const libro = await Libro.create(req.body);
+    return res.status(201).json(libro);
+  } catch (error) {
+    console.error('Error al crear libro:', error);
+    return res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+exports.actualizar = async (req, res) => {
+  try {
+    const libro = await Libro.findByPk(req.params.id);
+    if (!libro) {
+      return res.status(404).json({ message: 'Libro no encontrado' });
     }
 
     await libro.update(req.body);
     return res.json(libro);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error('Error al actualizar libro:', error);
+    return res.status(500).json({ message: 'Error del servidor' });
   }
 };
 
-const eliminarLibro = async (req, res) => {
+exports.eliminar = async (req, res) => {
   try {
-    const { id } = req.params;
-    const libro = await Libro.findByPk(id);
+    const libro = await Libro.findByPk(req.params.id);
     if (!libro) {
-      return res.status(404).json({ error: 'Libro no encontrado' });
+      return res.status(404).json({ message: 'Libro no encontrado' });
     }
 
     await libro.destroy();
-    return res.json({ message: 'Libro eliminado' });
+    return res.json({ message: 'Libro eliminado correctamente' });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error('Error al eliminar libro:', error);
+    return res.status(500).json({ message: 'Error del servidor' });
   }
 };
 
-const obtenerLibros = async (req, res) => {
+exports.validarIsbn = async (req, res) => {
   try {
-    const libros = await Libro.findAll();
-    return res.json(libros);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
+    const isbn = String(req.query.isbn || '').trim();
 
-const obtenerLibroPorId = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const libro = await Libro.findByPk(id);
-    if (!libro) {
-      return res.status(404).json({ error: 'Libro no encontrado' });
+    if (!isbn) {
+      return res.status(400).json({ valido: false, error: 'ISBN requerido' });
     }
-    return res.json(libro);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
 
-module.exports = {
-  crearLibro,
-  actualizarLibro,
-  eliminarLibro,
-  obtenerLibros,
-  obtenerLibroPorId
+    const libroExistente = await Libro.findOne({ where: { isbn } });
+    const valido = isbn.length >= 10;
+
+    return res.json({
+      valido,
+      existe: Boolean(libroExistente),
+      error: valido ? undefined : 'ISBN inválido'
+    });
+  } catch (error) {
+    console.error('Error al validar ISBN:', error);
+    return res.status(500).json({ message: 'Error del servidor' });
+  }
 };

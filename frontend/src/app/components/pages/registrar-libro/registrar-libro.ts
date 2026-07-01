@@ -1,17 +1,11 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LibroService } from '../../../services/libro.service';
 import { Libro } from '../../../models/libro.model';
 import { obtenerMensajeError } from '../../../utils/http-error.util';
-import * as ISBN from 'isbn3';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-registrar-libro',
@@ -24,6 +18,7 @@ export class RegistrarLibro implements OnChanges {
   @Input() libroEditar: Libro | null = null;
   @Output() saved = new EventEmitter<Libro>();
   @Output() cancelado = new EventEmitter<void>();
+  @Output() cerrado = new EventEmitter<void>();
 
   hoy = new Date().toISOString().slice(0, 10);
 
@@ -40,7 +35,6 @@ export class RegistrarLibro implements OnChanges {
     stock: 0,
   };
 
-  categorias = ['Ficción', 'No ficción', 'Infantil', 'Académico', 'Ciencia', 'Historia', 'Tecnología'];
   errorMsg = '';
   exito = false;
   cargando = false;
@@ -50,7 +44,11 @@ export class RegistrarLibro implements OnChanges {
   isbnValido: boolean | null = null;   // null = sin validar, true = válido, false = inválido
   isbnMsg = '';                         // mensaje a mostrar bajo el campo
 
-  constructor(private libroService: LibroService) {}
+  constructor(
+    private libroService: LibroService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   get esEdicion(): boolean {
     return !!this.libroEditar;
@@ -67,7 +65,7 @@ export class RegistrarLibro implements OnChanges {
   }
 
   // Se llama en (blur) del campo ISBN y también desde onSubmit
-  validarISBN(): boolean {
+  async validarISBN(): Promise<boolean> {
     const isbn = this.libro.isbn?.toString().trim() ?? '';
 
     if (!isbn) {
@@ -76,24 +74,25 @@ export class RegistrarLibro implements OnChanges {
       return false;
     }
 
-    const parsed = ISBN.parse(isbn);
+    try {
+      const respuesta = await firstValueFrom(this.libroService.validarIsbn(isbn));
 
-    if (!parsed) {
+      if (!respuesta.valido) {
+        this.isbnValido = false;
+        this.isbnMsg = respuesta.error ?? 'El ISBN no es válido.';
+        return false;
+      }
+
+      const formateado = respuesta.isbn13 ?? respuesta.isbn10 ?? isbn;
+      this.libro.isbn = formateado;
+      this.isbnValido = true;
+      this.isbnMsg = `ISBN válido ✔ — ${respuesta.tipo ?? 'ISBN'}: ${formateado}`;
+      return true;
+    } catch {
       this.isbnValido = false;
-      this.isbnMsg = 'El ISBN no es válido. Revisá que los dígitos sean correctos.';
+      this.isbnMsg = 'No se pudo validar el ISBN en este momento.';
       return false;
     }
-
-    // isbn3 devuelve el ISBN formateado con guiones correctamente
-    const formateado = parsed.isbn13h ?? parsed.isbn10h ?? isbn;
-
-    this.isbnValido = true;
-    this.isbnMsg = `ISBN válido ✔ — ${parsed.isIsbn13 ? 'ISBN-13' : 'ISBN-10'}: ${formateado}`;
-
-    // Reemplazar el valor del campo con el ISBN formateado
-    this.libro.isbn = formateado;
-
-    return true;
   }
 
   validarPrecios(): boolean {
@@ -113,7 +112,7 @@ export class RegistrarLibro implements OnChanges {
     return true;
   }
 
-  onSubmit(form: NgForm): void {
+  async onSubmit(form: NgForm): Promise<void> {
     this.errorMsg = '';
     this.exito = false;
     this.libroGuardado = null;
@@ -129,7 +128,7 @@ export class RegistrarLibro implements OnChanges {
     }
 
     // Siempre revalidar al enviar por si el usuario no salió del campo
-    if (!this.validarISBN()) {
+    if (!(await this.validarISBN())) {
       return;
     }
 
@@ -153,12 +152,14 @@ export class RegistrarLibro implements OnChanges {
         this.cargando = false;
         this.exito = true;
         this.libroGuardado = savedLibro;
-        this.limpiarEstado();
+        this.resetearFormulario();
         this.saved.emit(savedLibro);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.cargando = false;
         this.errorMsg = obtenerMensajeError(error, 'No se pudo registrar el libro');
+        this.cdr.detectChanges();
       }
     });
   }
@@ -175,10 +176,12 @@ export class RegistrarLibro implements OnChanges {
         this.exito = true;
         this.libroGuardado = actualizado;
         this.saved.emit(actualizado);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.cargando = false;
         this.errorMsg = obtenerMensajeError(error, 'No se pudo actualizar el libro');
+        this.cdr.detectChanges();
       }
     });
   }
@@ -195,6 +198,15 @@ export class RegistrarLibro implements OnChanges {
 
   cancelarEdicion(): void {
     this.cancelado.emit();
+  }
+
+  salirAlListado(): void {
+    if (this.router.url === '/libros') {
+      this.cerrado.emit();
+      return;
+    }
+
+    this.router.navigate(['/libros']);
   }
 
   private prepararPayload(): Omit<Libro, 'id_libro'> {
@@ -232,6 +244,23 @@ export class RegistrarLibro implements OnChanges {
       fecha_ingreso: this.libroEditar.fecha_ingreso || this.hoy,
       tiene_stock_bajo: this.libroEditar.tiene_stock_bajo,
       stock: this.libroEditar.stock,
+    };
+  }
+
+  private resetearFormulario(): void {
+    this.isbnValido = null;
+    this.isbnMsg = '';
+    this.libro = {
+      titulo: '',
+      autor: '',
+      isbn: '',
+      editorial: '',
+      categoria: '',
+      precio_costo: 0,
+      precio_venta: 0,
+      fecha_ingreso: this.hoy,
+      tiene_stock_bajo: false,
+      stock: 0,
     };
   }
 

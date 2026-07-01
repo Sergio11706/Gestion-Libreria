@@ -8,31 +8,6 @@
       <p class="brand-subtitle">{{ subtitulo }}</p>
     </div>
 
-    <div class="role-switch" role="tablist" aria-label="Tipo de acceso">
-      <button
-        type="button"
-        class="role-btn"
-        role="tab"
-        [class.active]="tipoAcceso === 'encargado'"
-        [attr.aria-selected]="tipoAcceso === 'encargado'"
-        [disabled]="cargando"
-        (click)="cambiarTipo('encargado')"
-      >
-        Encargado
-      </button>
-      <button
-        type="button"
-        class="role-btn"
-        role="tab"
-        [class.active]="tipoAcceso === 'empleado'"
-        [attr.aria-selected]="tipoAcceso === 'empleado'"
-        [disabled]="cargando"
-        (click)="cambiarTipo('empleado')"
-      >
-        Empleado
-      </button>
-    </div>
-
     <div class="login-divider"></div>
 
     <form #loginForm="ngForm" class="login-form" (ngSubmit)="iniciarSesion(loginForm)" novalidate>

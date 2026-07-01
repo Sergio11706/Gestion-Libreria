@@ -6,14 +6,14 @@
     </div>
 
     <nav class="nav-links">
-      <a routerLink="/empleados" routerLinkActive="active">Empleados</a>
+      <a *ngIf="!esEmpleado" routerLink="/empleados" routerLinkActive="active">Empleados</a>
       <a routerLink="/libros" routerLinkActive="active">Libros</a>
     </nav>
 
     <div class="user-area">
       <span class="user-name">
         <i class="fa-solid fa-user-tie"></i>
-        {{ nombreEncargado }}
+        {{ nombreUsuario }}
       </span>
       <button type="button" class="btn-logout" (click)="cerrarSesion()">
         <i class="fa-solid fa-right-from-bracket"></i>

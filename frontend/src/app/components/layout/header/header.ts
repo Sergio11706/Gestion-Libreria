@@ -16,12 +16,20 @@ export class Header {
     private router: Router
   ) {}
 
-  get nombreEncargado(): string {
+  get esEmpleado(): boolean {
+    return this.authService.isEmpleadoLoggedIn();
+  }
+
+  get nombreUsuario(): string {
     const encargado = this.authService.getEncargado();
-    if (!encargado) {
-      return 'Encargado';
+    if (encargado) {
+      return `${encargado.nombre} ${encargado.apellido}`;
     }
-    return `${encargado.nombre} ${encargado.apellido}`;
+    const empleado = this.authService.getEmpleado();
+    if (empleado) {
+      return `${empleado.nombre} ${empleado.apellido}`;
+    }
+    return 'Usuario';
   }
 
   cerrarSesion(): void {

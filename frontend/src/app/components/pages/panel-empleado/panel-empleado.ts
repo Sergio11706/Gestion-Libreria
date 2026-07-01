@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { Empleado } from '../../../models/empleado.model';
+import { Empleado } from '../../../models/usuario.model';
 
 @Component({
   selector: 'app-panel-empleado',
@@ -39,11 +39,11 @@ export class PanelEmpleado implements OnInit {
       return;
     }
 
-    this.router.navigate(['/empleado/login']);
+    this.router.navigate(['/login']);
   }
 
   cerrarSesion(): void {
     this.authService.logout();
-    this.router.navigate(['/empleado/login']);
+    this.router.navigate(['/login']);
   }
 }

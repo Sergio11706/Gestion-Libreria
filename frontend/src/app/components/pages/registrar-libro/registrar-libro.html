@@ -10,20 +10,23 @@
       </div>
     </div>
 
-    <div class="alert alert-success" *ngIf="exito">
-      {{ esEdicion ? 'Libro actualizado exitosamente.' : 'Libro registrado exitosamente.' }}
-    </div>
-
-    <div class="alert alert-success" *ngIf="libroGuardado">
-      <div>
-        <strong>{{ esEdicion ? 'Libro actualizado:' : 'Libro guardado:' }}</strong>
-        <div>Título: {{ libroGuardado.titulo }}</div>
-        <div>Autor: {{ libroGuardado.autor }}</div>
-        <div>ISBN: {{ libroGuardado.isbn }}</div>
-        <div>Editorial: {{ libroGuardado.editorial || 'No especificada' }}</div>
-        <div>Categoría: {{ libroGuardado.categoria || 'No especificada' }}</div>
-        <div>Precio venta: ${{ libroGuardado.precio_venta.toFixed(2) }}</div>
-        <div>Stock: {{ libroGuardado.stock }}</div>
+    <div class="modal-backdrop" *ngIf="libroGuardado">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+        <div class="modal-icon">✓</div>
+        <h3 id="modal-titulo">{{ esEdicion ? 'Libro actualizado correctamente' : 'Libro registrado correctamente' }}</h3>
+        <p class="modal-subtitle">Se guardaron los datos del libro con éxito.</p>
+        <div class="modal-details">
+          <div><strong>Título:</strong> {{ libroGuardado.titulo }}</div>
+          <div><strong>Autor:</strong> {{ libroGuardado.autor }}</div>
+          <div><strong>ISBN:</strong> {{ libroGuardado.isbn }}</div>
+          <div><strong>Editorial:</strong> {{ libroGuardado.editorial || 'No especificada' }}</div>
+          <div><strong>Categoría:</strong> {{ libroGuardado.categoria || 'No especificada' }}</div>
+          <div><strong>Precio venta:</strong> ${{ libroGuardado.precio_venta.toFixed(2) }}</div>
+          <div><strong>Stock:</strong> {{ libroGuardado.stock }}</div>
+        </div>
+        <div class="actions modal-actions">
+          <button type="button" class="btn-primary" (click)="salirAlListado()">Salir</button>
+        </div>
       </div>
     </div>
 
@@ -123,10 +126,15 @@
         <div class="grid-2">
           <div class="field">
             <label for="categoria">Categoría</label>
-            <select id="categoria" name="categoria" [(ngModel)]="libro.categoria" [disabled]="cargando">
-              <option value="">— Seleccioná —</option>
-              <option *ngFor="let c of categorias" [value]="c">{{ c }}</option>
-            </select>
+            <input
+              id="categoria"
+              name="categoria"
+              type="text"
+              [(ngModel)]="libro.categoria"
+              placeholder="Ej: Fantasía"
+              maxlength="120"
+              [disabled]="cargando"
+            />
           </div>
           <div class="field">
             <label for="fecha_ingreso">Fecha de ingreso</label>
@@ -216,9 +224,6 @@
       </fieldset>
 
       <div class="actions">
-        <button type="button" class="btn-secondary" (click)="onReset(registroForm)" [disabled]="cargando">
-          Limpiar
-        </button>
         <button type="button" class="btn-secondary" *ngIf="esEdicion" (click)="cancelarEdicion()" [disabled]="cargando">
           Cancelar
         </button>

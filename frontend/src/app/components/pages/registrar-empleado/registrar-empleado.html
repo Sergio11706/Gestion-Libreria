@@ -201,9 +201,6 @@
     </fieldset>
 
     <div class="actions">
-      <button type="button" class="btn-secondary" (click)="onReset(registroForm)" [disabled]="cargando">
-        Limpiar
-      </button>
       <button type="button" class="btn-secondary" *ngIf="esEdicion" (click)="cancelarEdicion()" [disabled]="cargando">
         Cancelar
       </button>

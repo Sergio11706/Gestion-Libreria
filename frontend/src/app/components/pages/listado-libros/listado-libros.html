@@ -9,56 +9,106 @@
     </div>
 
     <div class="toolbar">
-      <button class="btn-primary" type="button" (click)="toggleFormulario()">
+      <button *ngIf="!esEmpleado" class="btn-primary" type="button" (click)="toggleFormulario()">
         {{ mostrarFormulario ? 'Cerrar' : 'Registrar libro' }}
       </button>
     </div>
 
-    <div *ngIf="mostrarFormulario">
+    <div class="search-panel">
+      <div class="search-field">
+        <label for="filtroTitulo">Título</label>
+        <input id="filtroTitulo" type="text" [(ngModel)]="filtroTitulo" placeholder="Buscar por título" />
+      </div>
+      <div class="search-field">
+        <label for="filtroAutor">Autor</label>
+        <input id="filtroAutor" type="text" [(ngModel)]="filtroAutor" placeholder="Buscar por autor" />
+      </div>
+      <div class="search-field">
+        <label for="filtroCategoria">Categoría</label>
+        <input id="filtroCategoria" type="text" [(ngModel)]="filtroCategoria" placeholder="Buscar por categoría" />
+      </div>
+    </div>
+
+    <div *ngIf="mostrarFormulario && !esEmpleado" class="panel-con-cierre">
+      <div class="panel-header">
+        <button type="button" class="btn-cerrar-panel" (click)="cerrarFormulario()">✕ Cerrar</button>
+      </div>
       <app-registrar-libro
         [libroEditar]="libroEnEdicion"
         (saved)="onLibroGuardado()"
         (cancelado)="cerrarFormulario()"
+        (cerrado)="cerrarFormulario()"
       ></app-registrar-libro>
     </div>
 
+    <div *ngIf="mostrarStock && libroParaStock" class="stock-panel panel-con-cierre">
+      <div class="panel-header">
+        <button type="button" class="btn-cerrar-panel" (click)="cerrarFormulario()">✕ Cerrar</button>
+      </div>
+      <app-actualizar-stock
+        [libroInicial]="libroParaStock"
+        (cerrado)="cerrarFormulario()"
+        (actualizado)="onStockActualizado()"
+      ></app-actualizar-stock>
+    </div>
+
+    <div class="modal-backdrop" *ngIf="mostrarModalEliminar && !esEmpleado">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-eliminar-title">
+        <div class="modal-icon">⚠</div>
+        <h3 id="modal-eliminar-title">¿Eliminar libro?</h3>
+        <p class="modal-subtitle">
+          Se eliminará <strong>{{ libroAEliminar?.titulo }}</strong> de la base de datos.
+        </p>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="cancelarEliminacion()">Cancelar</button>
+          <button type="button" class="btn-delete btn-delete-modal" (click)="confirmarEliminacion()">Confirmar eliminación</button>
+        </div>
+      </div>
+    </div>
+
     <ng-container *ngIf="!cargando; else cargandoTemplate">
-      <table class="tabla-libros" *ngIf="libros.length > 0; else sinLibros">
+      <table class="tabla-libros" *ngIf="librosFiltrados.length > 0; else sinLibros">
         <thead>
           <tr>
             <th (click)="ordenarLibros('titulo')" style="cursor: pointer; user-select: none;" title="Ordenar por título">
               Título
               <span *ngIf="criterioActual === 'titulo'">{{ ordenAscendente ? '↑' : '↓' }}</span>
             </th>
-            
+
             <th (click)="ordenarLibros('autor')" style="cursor: pointer; user-select: none;" title="Ordenar por autor">
               Autor
               <span *ngIf="criterioActual === 'autor'">{{ ordenAscendente ? '↑' : '↓' }}</span>
             </th>
-            
+
             <th (click)="ordenarLibros('categoria')" style="cursor: pointer; user-select: none;" title="Ordenar por categoría">
               Categoría
               <span *ngIf="criterioActual === 'categoria'">{{ ordenAscendente ? '↑' : '↓' }}</span>
             </th>
-            
+
             <th>Stock</th>
             <th>Acciones</th>
           </tr>
         </thead>
-        
+
         <tbody>
-          <tr *ngFor="let libro of libros" class="fila-libro">
+          <tr *ngFor="let libro of librosFiltrados" class="fila-libro" [class.fila-stock-bajo]="libro.tiene_stock_bajo">
             <td>{{ libro.titulo }}</td>
             <td>{{ libro.autor }}</td>
             <td>{{ libro.categoria || 'Sin categoría' }}</td>
-            <td class="stock">{{ libro.stock }}</td>
+            <td class="stock">
+              {{ libro.stock }}
+              <span *ngIf="libro.tiene_stock_bajo" class="badge-stock-bajo" title="Stock bajo">⚠</span>
+            </td>
             <td class="acciones">
-              <button type="button" class="btn-edit" (click)="editarLibro(libro, $event)">
+              <button *ngIf="!esEmpleado" type="button" class="btn-edit" (click)="editarLibro(libro, $event)">
                 Editar
               </button>
-              <a class="btn-stock" [routerLink]="['/libros/actualizar', libro.id_libro]">
+              <button type="button" class="btn-stock" (click)="abrirStock(libro, $event)">
                 Stock
-              </a>
+              </button>
+              <button *ngIf="!esEmpleado" type="button" class="btn-delete" (click)="eliminarLibro(libro, $event)">
+                Eliminar
+              </button>
             </td>
           </tr>
         </tbody>
@@ -70,7 +120,7 @@
     </ng-template>
 
     <ng-template #sinLibros>
-      <div>No hay libros registrados.</div>
+      <div class="estado-vacio">No hay libros que coincidan con la búsqueda.</div>
     </ng-template>
   </div>
 </div>

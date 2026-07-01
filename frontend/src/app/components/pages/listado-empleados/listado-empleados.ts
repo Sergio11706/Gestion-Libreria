@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RegistrarEmpleado } from '../registrar-empleado/registrar-empleado';
 import { EmpleadoService } from '../../../services/empleado.service';
-import { Empleado } from '../../../models/empleado.model';
+import { Empleado } from '../../../models/usuario.model';
 
 @Component({
   selector: 'app-listado-empleados',
